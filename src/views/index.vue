@@ -20,7 +20,7 @@
             {{attribute.DEF.value}} <span style="font-size:.14rem;">({{Math.round((1-attribute.REDUCDMG)*100)}}%)</span>
           </div>
         </div>
-        <div class="item" title="暴击几率">
+        <div class="item" title="暴击率">
           <img src="../assets/icons/icon_78.png" alt="">
           <div class="value">
             {{attribute.CRIT.value}}%
@@ -43,7 +43,7 @@
 
       <div class="weapon" @mouseover="showItemInfo($event,'weapon',playerWeapon,false)" @mouseleave="closeItemInfo">
         <div class="title" v-if="playerWeapon">
-          <div class='icon' :style="{'box-shadow':'inset 0 0 7px 2px '+playerWeapon.quality.color}">
+          <div class='icon'  :class="{unique:playerWeapon.quality.name=='独特'}" :style="{'box-shadow':'inset 0 0 7px 2px '+playerWeapon.quality.color}">
             <img :src="playerWeapon.type.iconSrc" alt="">
           </div>
           <div class='name' :style="{color:playerWeapon.quality.color}">{{playerWeapon.type.name}}</div>
@@ -71,7 +71,7 @@
       <div id='sysInfo'>
         <div class="info warning" :class="{warning:v.type=='warning',battle:v.type=='battle',win:v.type=='win',trophy:v.type=='trophy',}" v-for="(v,k) in sysInfo" :key="k">系统<i style="font-size:.12rem" v-if="v.time">({{v.time}})</i>：
           <span>{{v.msg}}</span>
-          <a v-if="v.equip" v-for="(o,p) in v.equip" :key="p" :style="{color:o.quality.color}" @mouseover="showItemInfo($event,o.itemType,o)" @mouseleave="closeItemInfo">{{o.type.name}}</a>
+          <a v-if="v.equip" v-for="(o,p) in v.equip" :key="p" :style="{color:o.quality.color}" @mouseover="showItemInfo($event,o.itemType,o)" @mouseleave="closeItemInfo"><span v-if="o.quality.name=='独特'">稀有掉落：</span>{{o.type.name}}</a>
         </div>
       </div>
     </div>
@@ -84,14 +84,16 @@
         <i class="dungeons-close" @click="closeDungeonsInfo"></i>
         <div class="dungeons-title">{{dungeons.name}}</div>
         <div class="jjj">
-          <div class="dungeons-dps">推荐DPS：{{dungeons.needDPS}}</div>
-          <div class="dungeons-lv">副本等级{{dungeons.lv}}</div>
+          <div class="dungeons-dps" v-if="dungeons.type=='endless'">推荐DPS：???</div>
+          <div class="dungeons-dps" v-else>推荐DPS：{{dungeons.needDPS}}</div>
+          <div class="dungeons-lv" v-if="dungeons.type=='endless'">无尽层数:{{dungeons.lv}}</div>
+          <div class="dungeons-lv" v-else>副本等级:{{dungeons.lv}}</div>
         </div>
-        <!-- <div class="dese"> -{{dungeons.name}}:{{dungeons.desc||'副本介绍'}}</div> -->
-        <div class="dese"> -{{dungeons.name}}:{{'副本介绍'}}</div>
+        <div class="dese"> -{{dungeons.name}}:{{dungeons.desc||'副本介绍'}}</div>
+        <!-- <div class="dese"> -{{dungeons.name}}:{{'副本介绍'}}</div> -->
         <!-- <div class="dungeons-lv"> </div> -->
         <div class="handle">
-          <div>
+          <div v-if="dungeons.type!='endless'">
             <input type="checkbox" name="" v-model="reChallenge"> 重复挑战
           </div>
           <div class="dungeons-btn" @click="eventBegin()">开始挑战</div>
@@ -106,13 +108,18 @@
       <div class="event-icon low-level" @click="showDungeonsInfo(3)" v-show='!inDungeons' style="top: 28%;left: 43%;"><span>lv15</span></div>
       <div class="event-icon low-level" @click="showDungeonsInfo(4)" v-show='!inDungeons' style="top: 39%;left: 48%;"><span>lv20</span></div>
       <div class="event-icon m-level" @click="showDungeonsInfo(5)" v-show='!inDungeons' style="top: 9%;left: 61%;"><span>lv25</span></div>
-      <div class="event-icon m-level" @click="showDungeonsInfo(6)" v-show='!inDungeons' style="top: 19%;left: 71%;"><span>lv30</span></div>
-      <div class="event-icon m-level" @click="showDungeonsInfo(7)" v-show='!inDungeons' style="top: 29%;left: 88%;"><span>lv35</span></div>
-      <div class="event-icon m-level" @click="showDungeonsInfo(8)" v-show='!inDungeons' style="top: 45%;left: 78%;"><span>lv40</span></div>
-      <div class="event-icon htgh-level" @click="showDungeonsInfo(9)" v-show='!inDungeons' style="top: 64%;left: 11%;"><span>lv45</span></div>
-      <div class="event-icon htgh-level" @click="showDungeonsInfo(10)" v-show='!inDungeons' style="top: 75%;left: 36%;"><span>lv50</span></div>
-      <div class="event-icon htgh-level" @click="showDungeonsInfo(11)" v-show='!inDungeons' style="top: 75%;left: 58%;"><span>lv55</span></div>
-      <div class="event-icon boss" @click="showDungeonsInfo(12)" v-show='!inDungeons' style="top: 55%;left: 51%;"><span>boss</span></div>
+      <div class="event-icon m-level" @click="showDungeonsInfo(6)" v-show='!inDungeons' style="top: 10%;left: 71%;"><span>lv30</span></div>
+      <div class="event-icon m-level" @click="showDungeonsInfo(7)" v-show='!inDungeons' style="top: 21%;left: 88%;"><span>lv35</span></div>
+      <div class="event-icon m-level" @click="showDungeonsInfo(8)" v-show='!inDungeons' style="top: 32%;left: 78%;"><span>lv40</span></div>
+      <div class="event-icon m-level" @click="showDungeonsInfo(9)" v-show='!inDungeons' style="top: 42%;left: 88%;"><span>lv45</span></div>
+      <div class="event-icon m-level" @click="showDungeonsInfo(10)" v-show='!inDungeons' style="top: 56%;left: 80%;"><span>lv50</span></div>
+      <div class="event-icon h-level" @click="showDungeonsInfo(11)" v-show='!inDungeons' style="top: 79%;left: 73%;"><span>lv55</span></div>
+      <div class="event-icon h-level" @click="showDungeonsInfo(12)" v-show='!inDungeons' style="top: 85%;left: 61%;"><span>lv60</span></div>
+      <div class="event-icon h-level" @click="showDungeonsInfo(13)" v-show='!inDungeons' style="top: 71%;left: 40%;"><span>lv70</span></div>
+      <div class="event-icon h-level" @click="showDungeonsInfo(14)" v-show='!inDungeons' style="top: 75%;left: 20%;"><span>lv80</span></div>
+      <div class="event-icon boss" @click="showDungeonsInfo(15)" v-show='!inDungeons' style="top: 56%;left: 51%;"><span>lv90</span></div>
+      <div class="event-icon boss" @click="showDungeonsInfo(16)" v-show='!inDungeons' style="top: 90%;left: 88%;"><span>lv100</span></div>
+      <div class="event-icon endless" v-if="endlessLv" @click="showDungeonsInfo(17)" v-show='!inDungeons' style="top: 10%;left: 18%;"><span>无尽</span></div>
     </div>
     <div class="menu">
       <div class="Backpack" @click="openMenuPanel('backpack')">
@@ -131,10 +138,10 @@
         <img src="../assets/icons/menu/icon_85.png" alt="">
         <span>保存</span>
       </div>
-      <!-- <div class="Backpack" @click="GMOpened = true">
+      <div class="Backpack" @click="GMOpened = true">
         <img src="../assets/icons/menu/icon_85.png" alt="">
         <span>GM</span>
-      </div> -->
+      </div>
     </div>
     <div class="dialog" :style='itemDialogStyle'>
       <weaponPanel :item="weapon" v-show="weaponShow"></weaponPanel>
@@ -231,6 +238,7 @@ export default {
         this.$store.commit('set_player_acc', this.$deepCopy(this.saveData.playerEquipment.playerAcc))
 
         this.$store.commit('set_player_gold', parseInt(this.saveData.gold) || 0)
+        this.$store.commit('set_endless_lv', parseInt(this.saveData.endlessLv) || 0)
       }
       else {
         this.$store.commit('set_player_weapon', this.$deepCopy(this.playerWeapon))
@@ -279,6 +287,7 @@ export default {
     playerWeapon() { return this.$store.state.playerAttribute.weapon },
     playerArmor() { return this.$store.state.playerAttribute.armor },
     playerAcc() { return this.$store.state.playerAttribute.acc },
+    endlessLv(){ return this.$store.state.playerAttribute.endlessLv }
   },
   watch: {
     sysInfo() {
@@ -317,6 +326,7 @@ export default {
         },
         backpackEquipment: backpackPanel.grid,
         gold: this.$store.state.playerAttribute.GOLD,
+        endlessLv: this.$store.state.playerAttribute.endlessLv,
       }
       var saveData = Base64.encode(Base64.encode(JSON.stringify(data)))
       localStorage.setItem('_sd', saveData)
@@ -377,6 +387,10 @@ export default {
     showDungeonsInfo(k) {
       var b = this.findComponentDownward(this, 'dungeons')
       this.dungeons = b.dungeonsArr[k]
+      if(this.dungeons.type == 'endless'){
+        this.reChallenge = false
+        this.dungeons.lv = this.$store.state.playerAttribute.endlessLv
+      }
     },
     closeDungeonsInfo() {
       this.dungeons = ''
@@ -732,16 +746,25 @@ a {
         left: 50%;
         transform: translateX(-50%);
         text-shadow: 1px 1px 3px rgb(0, 0, 0);
+        white-space: nowrap;
       }
     }
     .low-level {
       background-color: rgba(100, 255, 36, 0.7);
     }
     .m-level {
+      background-color: rgba(0, 159, 245, 0.7);
+    }
+    .h-level {
       background-color: rgba(245, 241, 0, 0.7);
     }
     .boss {
       background-image: url(../assets/icons/icon_83.png);
+    }
+    .endless {
+      background-image: url(../assets/icons/endless.png);
+      background-color: rgba(245, 69, 0, 0.7);
+      ox-shadow: 0 0 4px 4px #ffabab;
     }
   }
 }
@@ -871,9 +894,18 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    white-space:nowrap;
+    font-size: .14rem;
     & > div {
       display: flex;
       align-items: center;
+    }
+    input{
+      width:.2rem;
+      height:.2rem;
+      min-height: 15px;
+      min-width: 15px;
+      margin-right: .05rem;
     }
   }
   .jjj {
@@ -897,12 +929,13 @@ a {
     color: #999;
   }
   .dungeons-btn {
-    margin: 0.2rem 0.4rem;
+    margin: 0.2rem 0.3rem;
     padding: 0.1rem 0.3rem;
     cursor: pointer;
     color: #fff;
     background: #000;
     border: 1px solid #fff;
+    white-space:nowrap
   }
 }
 </style>

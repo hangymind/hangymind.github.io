@@ -15,7 +15,7 @@
           >
             <img :src="v.type.iconSrc" alt="" />
           </div>
-          <span class="info">{{v.lv * v.quality.qualityCoefficient * (300+5*v.lv)}}</span>
+          <span class="info" :style="{'font-size':(parseInt(v.gold)>99999?0.18:0.22)+'rem'}">{{v.gold}}</span>
         </div>
       </div>
     </div>
@@ -113,6 +113,8 @@ export default {
       var acclv = Number(this.$store.state.playerAttribute.acc.lv);
       for (let i = 0; i < 5; i++) {
         var lv = parseInt((wlv + alv + acclv) / 3 + Math.random() * 6);
+        //装备等级最高110
+        lv>110?110:lv
         this.createShopItem(lv);
       }
     },
@@ -155,6 +157,7 @@ export default {
           var item = b.createNewItem(equipQua, lv);
         }
         item = JSON.parse(item);
+        item.gold = parseInt(item.lv * item.quality.qualityCoefficient * (200+10*item.lv))
         for (let i = 0; i < this.grid.length; i++) {
           if (JSON.stringify(this.grid[i]).length < 3) {
             this.$set(this.grid, i, item);
@@ -194,10 +197,10 @@ export default {
       p.weaponShow = p.armorShow = p.accShow = false;
     },
     buyTheEquipment() {
-      var gold =
-        this.currentItem.lv * this.currentItem.quality.qualityCoefficient * (200+5*this.currentItem.lv);
-      gold = parseInt(gold)
-      if (this.$store.state.playerAttribute.GOLD < gold) {
+      // var gold =
+      //   this.currentItem.lv * this.currentItem.quality.qualityCoefficient * (200+5*this.currentItem.lv);
+      // gold = parseInt(gold)
+      if (this.$store.state.playerAttribute.GOLD < this.currentItem.gold) {
         this.$store.commit("set_sys_info", {
           msg: `
               钱不够啊，买啥呢。
@@ -205,7 +208,7 @@ export default {
           type: "warning",
         });
       } else {
-        this.$store.commit("set_player_gold", -parseInt(gold));
+        this.$store.commit("set_player_gold", -parseInt(this.currentItem.gold));
 
         var backpackPanel = this.findBrothersComponents(
           this,
