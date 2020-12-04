@@ -5,10 +5,10 @@
     </div> -->
     <div class="accPanel" :style="{'box-shadow':' 0 0 5px 5px '+acc.quality.color + 'b8'}"  v-if="JSON.stringify(acc)!='{}'">
       <div class="title">
-        <div class='icon' :style="{'box-shadow':'inset 0 0 7px 2px '+acc.quality.color}">
+        <div class='icon' :class="{unique:acc.quality.name=='独特'}" :style="{'box-shadow':'inset 0 0 7px 2px '+acc.quality.color}">
           <img :src="acc.type.iconSrc" alt="">
         </div>
-        <div class='name' :style="{color:acc.quality.color}">{{acc.type.name}}</div>
+        <div class='name' :style="{color:acc.quality.color}">{{acc.type.name}} {{acc.enchantlvl?'(+'+acc.enchantlvl+')':''}}</div>
       </div>
       <div class='type'>
         <div :style="{color:acc.quality.color}">{{acc.quality.name}}</div>
@@ -19,7 +19,8 @@
       </div>
       <div class="entry">
         <div v-for="v in acc.type.entry" :key="v.id">
-          <div>{{v.name}} : {{v.showVal}}</div>
+          <!-- <div>{{v.name}} : {{v.showVal}}</div> -->
+          <div>{{v.name}} : {{v.showVal}} <span style="color:#68d5ed" v-if="acc.enchantlvl">(+{{Math.round(v.value*(1.05**(acc.enchantlvl)**1.1)-v.value)}})</span></div>
         </div>
       </div>
       <div class="extraEntry">
@@ -64,7 +65,116 @@ export default {
         qualityCoefficient: 2,
         probability: '0.05',
         color: '#f78918', extraEntryNum: 4,
+      }, {
+        name: '独特',
+        qualityCoefficient: 2.35,
+        probability: '0',
+        color: '#ff0000', extraEntryNum: 5,
       }],
+      uniqueCategory: [{
+        name: '真·毛毛指环',
+        des: '',
+        iconSrc: './icons/U_Acc02.png',
+        entry: [{
+            'valCoefficient': 1.2,
+            'value': '11',
+            'showVal': '+11',
+            type: 'CRITDMG',
+            'name': '暴击伤害'
+          },{
+            'valCoefficient': 0.5,
+            'value': '11',
+            'showVal': '+11',
+            type: 'CRIT',
+            'name': '暴击率'
+          },{
+            'valCoefficient': 0.7,
+            'value': '11',
+            'showVal': '+11',
+            type: 'ATK',
+            'name': '攻击力'
+          },]
+      },{
+        name: '死神名片戒指',
+        des: '',
+        iconSrc: './icons/U_Acc01.png',
+        entry: [{
+            'valCoefficient': 1.0,
+            'value': '11',
+            'showVal': '+11',
+            type: 'CRITDMG',
+            'name': '暴击伤害'
+          },{
+            'valCoefficient': 0.5,
+            'value': '11',
+            'showVal': '+11',
+            type: 'CRIT',
+            'name': '暴击率'
+          },{
+            'valCoefficient': 0.8,
+            'value': '11',
+            'showVal': '+11',
+            type: 'HP',
+            'name': '生命值'
+          }]
+      },{
+        name: '先驱者戒指',
+        des: '',
+        iconSrc: './icons/U_Acc03.png',
+        entry: [{
+            'valCoefficient': 1.0,
+            'value': '11',
+            'showVal': '+11',
+            type: 'CRITDMG',
+            'name': '暴击伤害'
+          },{
+            'valCoefficient': 0.5,
+            'value': '11',
+            'showVal': '+11',
+            type: 'CRIT',
+            'name': '暴击率'
+          },{
+            'valCoefficient': 0.7,
+            'value': '11',
+            'showVal': '+11',
+            type: 'HP',
+            'name': '生命值'
+          }]
+      },{
+        name: '素盏呜尊的意志',
+        des: '',
+        iconSrc: './icons/U_Acc04.png',
+        entry: [{
+            'valCoefficient': 1.6,
+            'value': '11',
+            'showVal': '+11',
+            type: 'CRITDMG',
+            'name': '暴击伤害'
+          },{
+            'valCoefficient': 1.1,
+            'value': '11',
+            'showVal': '+11',
+            type: 'ATK',
+            'name': '攻击力'
+          },]
+      },{
+        name: '月夜见尊的意志',
+        des: '',
+        iconSrc: './icons/U_Acc05.png',
+        entry: [{
+            'valCoefficient': 1.5,
+            'value': '11',
+            'showVal': '+11',
+            type: 'CRITDMG',
+            'name': '暴击伤害'
+          },{
+            'valCoefficient': 1.2,
+            'value': '11',
+            'showVal': '+11',
+            type: 'HP',
+            'name': '生命值'
+          }]
+      },],
       category: [
         {
           name: '生命指环',
@@ -143,7 +253,7 @@ export default {
           des: '冰龙凝雪',
           iconSrc: './icons/Ac_7.png',
           entry: [{
-            'valCoefficient': 0.9,
+            'valCoefficient': 0.75,
             'value': '11',
             'showVal': '+11',
             type: 'CRITDMG',
@@ -231,8 +341,13 @@ export default {
       return parseInt(Math.random() * (Max || 39)) + 1
     },
     createType(acc) {
-      var index = Math.floor((Math.random() * this.category.length));
-      let type = this.category[index], lv = acc.lv
+      if (acc.quality.name == '独特') {
+        var index = Math.floor((Math.random() * this.uniqueCategory.length));
+        var type = this.uniqueCategory[index], lv = acc.lv
+      } else {
+        var index = Math.floor((Math.random() * this.category.length));
+        var type = this.category[index], lv = acc.lv
+      }
       type.entry.map(item => {
         switch (item.type) {
           case 'ATK':
@@ -353,13 +468,7 @@ export default {
 * {
   box-sizing: border-box;
 }
-@font-face {
-  font-family: "Lato-Regular";
-  src: url(../../assets/fonts/Lato-Regular.ttf);
-}
 .accPanel {
-  font-family: Lato-Regular, "Noto Sans SC", "Noto Sans", "Source Sans Pro",
-    "Avenir", Helvetica, Arial, sans-serif !important;
   color: #f1f1f1;
   width: 3.00rem;
   height: auto;

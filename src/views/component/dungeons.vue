@@ -2,8 +2,9 @@
   <div class="dungeons">
     <div class="progress-bar"></div>
     <div class="icon-bar">
-      <div class="player" :style="{left:left+'%'}">
-        <img src="../../assets/icons/map/player1.png" alt="">
+      <div class="player" :style="{left:left+'%','backgroundPosition':parseInt(left%4)*32+'px 96px'}">
+        <!-- <img src="../../assets/icons/map/player-s.png" alt=""> -->
+        <!-- :style="{background-position:}" -->
       </div>
       <div class="monster" v-for="(v,k) in dungeons.eventType" :key="k" :style="{left:(100/dungeons.eventNum)*(k+1)+'%'}">
         <img :src="'./icons/map/'+v.type+'.png'" alt="">
@@ -22,6 +23,7 @@ export default {
       left: 0,
       pro: {},
       timeOut: {},
+      battleComTime: {},
       nextEvent: 1,
       dungeons: {
         battleTime: 2000,
@@ -100,6 +102,7 @@ export default {
   },
   mounted() {
     // this.evenHandle()
+
   },
   methods: {
     evenHandle() {
@@ -155,7 +158,7 @@ export default {
             `,
             type: 'battle'
           });
-          setTimeout(() => {
+          this.battleComTime = setTimeout(() => {
             this.battleCom(event)
           }, 2000)
           break;
@@ -165,30 +168,27 @@ export default {
       }
 
     },
-    // <div class="info win">系统：<span> 击杀了史莱姆（lv1）</span></div>
-    //   <div class="info trophy">系统：<span> 获得：金币+33</span></div>
-    //   <div class="info battle">系统：<span> 遭遇了史莱姆（lv1）</span></div>
-    forcedToStopEvent(){
+    forcedToStopEvent() {
       clearInterval(this.pro)
       clearTimeout(this.timeOut)
+      clearTimeout(this.battleComTime)
       this.pro = {}
       this.left = 0
       this.nextEvent = 1
       this.dungeons = {}
     },
     eventEnd() {
-      
 
       setTimeout(() => {
         // this.battleCom(event)
-       if (this.dungeons.type == "endless") {
+        if (this.dungeons.type == "endless") {
           this.$store.commit("set_sys_info", {
             msg: `
                 挑战成功，可以挑战下一层了
               `,
             type: "win",
           });
-          this.$store.commit("set_endless_lv", this.$store.state.playerAttribute.endlessLv+1);
+          this.$store.commit("set_endless_lv", this.$store.state.playerAttribute.endlessLv + 1);
           this.$store.commit("set_player_curhp", 9999999);
         } else {
           this.$store.commit("set_sys_info", {
@@ -198,13 +198,12 @@ export default {
             type: "win",
           });
         }
-        
 
         let p = this.findComponentUpward(this, 'index')
         let backpackPanel = this.findBrothersComponents(this, 'backpackPanel', false)[0]
 
-        if (this.dungeons.name == '黑色火山'&&!this.$store.state.playerAttribute.endlessLv) {
-          
+        if (this.dungeons.name == '黑色火山' && !this.$store.state.playerAttribute.endlessLv) {
+
           this.$store.commit("set_sys_info", {
             msg: "击败了最后的boss，你通关了！",
             type: 'warning'
@@ -218,17 +217,30 @@ export default {
             type: 'warning'
           });
 
-          this.$store.commit('set_endless_lv',1)
+          this.$store.commit('set_endless_lv', 1)
         }
         this.forcedToStopEvent()
-        let backpackPanelSign = backpackPanel.itemNum/backpackPanel.grid.length<0.8
-        if (p.reChallenge&&backpackPanelSign) {
+        let backpackPanelSign = backpackPanel.itemNum / backpackPanel.grid.length < 0.8
+        if (p.reChallenge && backpackPanelSign) {
+          p.eventBegin()
+        } else if (p.reEChallenge) {
+          this.$store.commit("set_endless_lv", this.$store.state.playerAttribute.endlessLv - 1);
+          p.eventBegin()
+        } else if (p.upEChallenge) {
+          p.endlessLv = this.$store.state.playerAttribute.endlessLv
+          p.dungeons.lv = this.$store.state.playerAttribute.endlessLv
           p.eventBegin()
         } else {
           p.dungeons = ''
           p.inDungeons = false
         }
-        
+
+        // if(p.reEChallenge){
+        //   this.$store.commit("set_endless_lv", this.$store.state.playerAttribute.endlessLv - 1);
+        // }
+        // if(p.upEChallenge){
+        // }
+
       }, 100)
     },
     // 计算战斗过程
@@ -238,18 +250,26 @@ export default {
         healthRecoverySpeed = this.$store.state.playerAttribute.healthRecoverySpeed,
         reducedDamage = this.$store.state.playerAttribute.attribute.REDUCDMG,
         playerDPS = playerAttribute.DPS,
-        monsterAttribute = event.attribute //HP: 100,ATK: 1,
+        monsterAttribute = this.$deepCopy(event.attribute) //HP: 100,ATK: 1,
 
       // 战斗伤害计算公式 
       // 1 - 0.06 * armor / (1 + (0.06 * armor))
 
       // 无尽模式下怪物加强
-      if(this.dungeons.type == 'endless'){
-        var endlessLv = this.$store.state.playerAttribute.endlessLv||0
-        monsterAttribute.ATK = monsterAttribute.ATK+endlessLv*100
-        monsterAttribute.HP = monsterAttribute.HP+endlessLv*110  
+      if (this.dungeons.type == 'endless') {
+        var endlessLv = this.$store.state.playerAttribute.endlessLv || 0
+        //设定一个怪物加强系数
+        monsterAttribute.ATK = monsterAttribute.ATK * (1 + 100 / 75)
+        monsterAttribute.HP = monsterAttribute.HP * (1 + 100 / 75)
+        monsterAttribute.ATK = monsterAttribute.ATK + endlessLv * 1000
+        monsterAttribute.HP = monsterAttribute.HP + endlessLv * 1100
+
+      } else {
+        //设定一个怪物加强系数
+        monsterAttribute.ATK = monsterAttribute.ATK * (1 + this.dungeons.lv / 55)
+        monsterAttribute.HP = monsterAttribute.HP * (1 + this.dungeons.lv / 55)
       }
-      
+
       var playerDeadTime = (playerAttribute.CURHP.value / reducedDamage / monsterAttribute.ATK),
         monsterDeadTime = (monsterAttribute.HP / playerDPS)
 
@@ -261,21 +281,21 @@ export default {
         this.$store.commit('set_player_curhp', takeDmg)
 
         // 无尽模式下怪物加强
-      if(this.dungeons.type == 'endless'){
-        this.$store.commit("set_sys_info", {
-          msg: `
+        if (this.dungeons.type == 'endless') {
+          this.$store.commit("set_sys_info", {
+            msg: `
               击杀了${event.name}(无尽层数：${this.dungeons.lv})，受到了${Math.abs(takeDmg)}点伤害
             `,
-          type: 'win'
-        });
-      }else{
-        this.$store.commit("set_sys_info", {
-          msg: `
+            type: 'win'
+          });
+        } else {
+          this.$store.commit("set_sys_info", {
+            msg: `
               击杀了${event.name}(lv${this.dungeons.lv})，受到了${Math.abs(takeDmg)}点伤害
             `,
-          type: 'win'
-        });
-      }
+            type: 'win'
+          });
+        }
         this.caculateTrophy(event)
 
       } else {
@@ -302,14 +322,32 @@ export default {
 
       }
     },
+    //战利品计算
     caculateTrophy(event) {
-      var items= []
+      var items = []
       var lv = this.dungeons.lv
-      if(event.type=='boss'&&this.dungeons.type!='endless'){
-        if(Math.random()>0.965){
-          var b = this.findBrothersComponents(this, 'weaponPanel', false)[0]
-          var item = b.createNewItem(4, parseInt(lv+Math.random()*6))  
-          items.push(JSON.parse(item))
+      // 获取独特装备
+      if (event.type == 'boss' && this.dungeons.type != 'endless') {
+        var randow = 0.96
+        if (this.dungeons.name == '黑色火山') {
+          randow = 0.92
+        }
+        if (Math.random() > randow) {
+          var random = Math.random()
+          if (random <= 0.3 && random > 0) {
+            var b = this.findBrothersComponents(this, 'weaponPanel', false)[0]
+            var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
+            items.push(JSON.parse(item))
+          } else if (random <= 0.6 && random > 0.3) {
+            var b = this.findBrothersComponents(this, 'armorPanel', false)[0]
+            var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
+            items.push(JSON.parse(item))
+          } else {
+            var b = this.findBrothersComponents(this, 'accPanel', false)[0]
+            var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
+            items.push(JSON.parse(item))
+          }
+
         }
       }
       var trophy = event.trophy
@@ -336,9 +374,7 @@ export default {
       } else {
         // 未获得装备
       }
-
       if (equipQua != -1) {
-        
         // this.createEquip(equipQua,lv)
         var index = Math.floor((Math.random() * 3));
         if (index == 0) {
@@ -353,15 +389,6 @@ export default {
         }
         items.push(JSON.parse(item))
         var backpackPanel = this.findBrothersComponents(this, 'backpackPanel', false)[0]
-        items.map(item=>{
-          for (let i = 0; i < backpackPanel.grid.length; i++) {
-            if (JSON.stringify(backpackPanel.grid[i]).length < 3) {
-              this.$set(backpackPanel.grid, i, item)
-              break;
-            }
-          }  
-        })
-        
         this.$store.commit("set_sys_info", {
           msg: `
               获得了:金币${event.trophy.gold}
@@ -370,15 +397,41 @@ export default {
           equip: items
         });
         this.$store.commit("set_player_gold", event.trophy.gold);
+        items.map(item => {
+          // 当开启了自动出售并且新获得的装备品质低于史诗时，自动出售
+          if (backpackPanel.autoSell[equipQua]) {
+            var gold = item.lv * item.quality.qualityCoefficient * 10
+            this.$store.commit("set_player_gold", parseInt(gold));
+            this.$store.commit("set_sys_info", {
+              msg: `
+                自动出售装备获得金币：${parseInt(gold)}
+              `,
+              type: 'trophy',
+            });
+          } else {
+            for (let i = 0; i < backpackPanel.grid.length; i++) {
+              if (JSON.stringify(backpackPanel.grid[i]).length < 3) {
+                this.$set(backpackPanel.grid, i, item)
+                break;
+              }
+            }
+          }
+        })
       } else {
+        //金币获取倍率
+        var goldObtainRatio = 1
+        if (this.dungeons.type == 'endless') {
+          var endlessLv = this.$store.state.playerAttribute.endlessLv
+          goldObtainRatio += endlessLv / 50
+        }
         this.$store.commit("set_sys_info", {
           msg: `
-              获得了:金币${event.trophy.gold}
+              获得了:金币${parseInt(event.trophy.gold * goldObtainRatio)}
             `,
           type: 'trophy',
           equip: []
         });
-        this.$store.commit("set_player_gold", event.trophy.gold);
+        this.$store.commit("set_player_gold", parseInt(event.trophy.gold * goldObtainRatio));
       }
 
     }
@@ -406,21 +459,23 @@ export default {
     position: relative;
     & > div {
       position: absolute;
-      height: 40px;
-      width: 40px;
+      height: 34px;
+      width: 34px;
       top: 50%;
       transform: translate(-50%, -50%);
       display: flex;
       img {
-        width: 40px;
-        height: 40px;
+        height: 34px;
+        width: 34px;
       }
     }
     .player {
       z-index: 2;
-      img {
-        transform: rotateY(180deg);
-      }
+      height: 48px;
+      width: 32px;
+      // background-position: -0px 96px !important;
+      background-repeat: no-repeat;
+      background: url(../../assets/icons/map/player-s.png);
     }
     .monster {
       left: 20%;

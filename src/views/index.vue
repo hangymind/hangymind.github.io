@@ -1,44 +1,115 @@
 <template>
   <div class="main" @contextmenu.prevent="contextmenu($event)">
     <div class="user-status">
-      <div class="hp" title="血量">
-        <img src="../assets/icons/S_Holy01.png" alt="">
-        <div class="value">
-          {{attribute.CURHP.value}}/{{attribute.MAXHP.value}}
-        </div>
-      </div>
+
+      <cTooltip placement="bottom">
+        <template v-slot:content>
+          <div class="hp">
+            <img src="../assets/icons/S_Holy01.png" alt="">
+            <div class="value">
+              {{attribute.CURHP.value}}/{{attribute.MAXHP.value}}
+            </div>
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* 当前生命值/最大生命值</p>
+          <p class="info">* 每秒会回复2%的最大生命值</p>
+        </template>
+
+      </cTooltip>
+
+      <!-- <cTooltip placement="bottom">
+        <template v-slot:content>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* </p>
+        </template>
+      </cTooltip> -->
+
       <div class="other">
-        <div class="item" title="攻击力">
-          <img src="../assets/icons/S_Sword06.png" alt="">
-          <div class="value">
-            {{attribute.ATK.value}}
-          </div>
-        </div>
-        <div class="item" title="防御力及减伤比例">
-          <img src="../assets/icons/icon_11.png" alt="">
-          <div class="value">
-            {{attribute.DEF.value}} <span style="font-size:.14rem;">({{Math.round((1-attribute.REDUCDMG)*100)}}%)</span>
-          </div>
-        </div>
-        <div class="item" title="暴击率">
-          <img src="../assets/icons/icon_78.png" alt="">
-          <div class="value">
-            {{attribute.CRIT.value}}%
-          </div>
-        </div>
-        <div class="item" title="暴击伤害">
-          <img src="../assets/icons/S_Sword01.png" alt="">
-          <div class="value">
-            {{attribute.CRITDMG.value}}%
-          </div>
-        </div>
+        <cTooltip placement="bottom">
+          <template v-slot:content>
+            <div class="item" title="攻击力">
+              <img src="../assets/icons/S_Sword06.png" alt="">
+              <div class="value">
+                {{attribute.ATK.value}}
+              </div>
+            </div>
+          </template>
+          <template v-slot:tip>
+            <p class="info">* 角色攻击力</p>
+          </template>
+        </cTooltip>
+
+        <cTooltip placement="bottom">
+          <template v-slot:content>
+            <div class="item">
+              <img src="../assets/icons/icon_11.png" alt="">
+              <div class="value">
+                {{attribute.DEF.value}} <span style="font-size:.14rem;">({{Math.round((1-attribute.REDUCDMG)*100)}}%)</span>
+              </div>
+            </div>
+          </template>
+          <template v-slot:tip>
+            <p class="info">* 角色防御力以及计算后的减伤比例</p>
+            <p class="info">* 减伤比例采用非线性计算，护甲越高收益越低</p>
+            <p class="info">* 显示为近似值，实际上永远不会到达100%减伤</p>
+          </template>
+        </cTooltip>
+
+        <cTooltip placement="bottom">
+          <template v-slot:content>
+            <div class="item">
+              <img src="../assets/icons/icon_78.png" alt="">
+              <div class="value">
+                {{attribute.CRIT.value}}%
+              </div>
+            </div>
+          </template>
+          <template v-slot:tip>
+            <p class="info">* 角色当前的暴击率</p>
+          </template>
+        </cTooltip>
+
+        <cTooltip placement="bottom">
+          <template v-slot:content>
+            <div class="item">
+              <img src="../assets/icons/S_Sword01.png" alt="">
+              <div class="value">
+                {{attribute.CRITDMG.value}}%
+              </div>
+            </div>
+          </template>
+          <template v-slot:tip>
+            <p class="info">* 暴击伤害初始为150%</p>
+          </template>
+        </cTooltip>
 
       </div>
     </div>
     <div class="user-item">
       <div class="uii">
-        <div class="gold" v-if="attribute.DPS">DPS: <span>{{(attribute.DPS).toFixed(2)}}</span></div>
-        <div class="gold">GOLD: <span>{{userGold}}</span></div>
+        <cTooltip placement="bottom">
+          <template v-slot:content>
+            <div class="gold" v-if="attribute.DPS" :style="{fontSize:attribute.DPS>=10000?'.18rem':'.22rem'}">DPS: 
+              <span :style="{fontSize:attribute.DPS>=10000?'.18rem':'.22rem'}">{{(attribute.DPS).toFixed(2)}}</span>
+            </div>
+          </template>
+          <template v-slot:tip>
+            <p class="info">* DPS:角色每秒伤害</p>
+            <p class="info">* 这个只是伤害数据，并没有统计防御属性，所以只是作为战斗力评估的一个依据</p>
+          </template>
+        </cTooltip>
+        <cTooltip placement="bottom">
+          <template v-slot:content>
+            <div class="gold" :style="{fontSize:userGold>=1000000?'.18rem':'.22rem'}">金币: <span :style="{fontSize:userGold>=1000000?'.14rem':'.16rem'}">{{userGold}}</span></div>
+          </template>
+          <template v-slot:tip>
+            <p class="info">* 你拥有的金币数量</p>
+            <p class="info">* 在这里，钱就是万能的</p>
+          </template>
+        </cTooltip>
+
       </div>
 
       <div class="weapon" @mouseover="showItemInfo($event,'weapon',playerWeapon,false)" @mouseleave="closeItemInfo">
@@ -46,7 +117,7 @@
           <div class='icon' :class="{unique:playerWeapon.quality.name=='独特'}" :style="{'box-shadow':'inset 0 0 7px 2px '+playerWeapon.quality.color}">
             <img :src="playerWeapon.type.iconSrc" alt="">
           </div>
-          <div class='name' :style="{color:playerWeapon.quality.color}">{{playerWeapon.type.name}}</div>
+          <div class='name' :style="{color:playerWeapon.quality.color}">{{playerWeapon.type.name}} {{playerWeapon.enchantlvl?'(+'+playerWeapon.enchantlvl+')':''}}</div>
         </div>
       </div>
       <div class="armor" @mouseover="showItemInfo($event,'armor',playerArmor,false)" @mouseleave="closeItemInfo">
@@ -54,7 +125,7 @@
           <div class='icon' :style="{'box-shadow':'inset 0 0 7px 2px  '+playerArmor.quality.color}">
             <img :src="playerArmor.type.iconSrc" alt="">
           </div>
-          <div class='name' :style="{color:playerArmor.quality.color}">{{playerArmor.type.name}}</div>
+          <div class='name' :style="{color:playerArmor.quality.color}">{{playerArmor.type.name}} {{playerArmor.enchantlvl?'(+'+playerArmor.enchantlvl+')':''}}</div>
         </div>
       </div>
       <div class="acc" @mouseover="showItemInfo($event,'acc',playerAcc,false)" @mouseleave="closeItemInfo">
@@ -62,7 +133,7 @@
           <div class='icon' :style="{'box-shadow':'inset 0 0 7px 2px '+playerAcc.quality.color}">
             <img :src="playerAcc.type.iconSrc" alt="">
           </div>
-          <div class='name' :style="{color:playerAcc.quality.color}">{{playerAcc.type.name}}</div>
+          <div class='name' :style="{color:playerAcc.quality.color}">{{playerAcc.type.name}} {{playerAcc.enchantlvl?'(+'+playerAcc.enchantlvl+')':''}}</div>
         </div>
       </div>
     </div>
@@ -96,6 +167,10 @@
           <div v-if="dungeons.type!='endless'">
             <input type="checkbox" name="" v-model="reChallenge"> 重复挑战
           </div>
+          <div class="handle-column" style="display:flex;flex-direction:column" v-else>
+            <p><input type="checkbox" name="" v-model="upEChallenge"> 向上挑战</p>
+            <p><input type="checkbox" name="" v-model="reEChallenge"> 重复挑战</p>
+          </div>
           <div class="dungeons-btn" @click="eventBegin()">开始挑战</div>
         </div>
 
@@ -124,24 +199,28 @@
     <div class="menu">
       <div class="Backpack" @click="openMenuPanel('backpack')">
         <img src="../assets/icons/menu/quest_icon_02.png" alt="">
-        <span>背包</span>
+        <span>背 包</span>
       </div>
       <div class="Backpack" @click="openMenuPanel('shop')">
         <img src="../assets/icons/menu/quest_icon_03.png" alt="">
-        <span>商店</span>
+        <span>商 店</span>
       </div>
-      <!-- <div class="Backpack" @click="openMenuPanel('backpack')">
-        <img src="../assets/icons/menu/icon_80.png" alt="">
-        <span>装备强化</span>
-      </div> -->
       <div class="Backpack" @click="saveGame">
-        <img src="../assets/icons/menu/icon_85.png" alt="">
-        <span>保存</span>
+        <img src="../assets/icons/menu/icon_save.png" alt="">
+        <span>保 存</span>
       </div>
-      <!-- <div class="Backpack" @click="GMOpened = true">
+      <div class="Backpack" @click="exportSavedata">
+        <img src="../assets/icons/menu/icon-export.png" alt="">
+        <span class="compact">导出</span>
+      </div>
+      <div class="Backpack" @click="importSaveDataPanelOpened =true">
+        <img src="../assets/icons/menu/icon-import.png" alt="">
+        <span class="compact">导入</span>
+      </div>
+      <div class="Backpack" v-if="GMmodel" @click="GMOpened = true">
         <img src="../assets/icons/menu/icon_85.png" alt="">
         <span>GM</span>
-      </div> -->
+      </div>
     </div>
     <div class="dialog" :style='itemDialogStyle'>
       <weaponPanel :item="weapon" v-show="weaponShow"></weaponPanel>
@@ -168,18 +247,52 @@
       </div>
       <shopPanel></shopPanel>
     </div>
+    <div class="dialog-backpackPanel" v-show="strengthenEquipmentPanelOpened">
+      <div class="title">
+        <span>强化装备</span>
+        <i class="close" @click="closePanel"></i>
+      </div>
+      <strengthenEquipment></strengthenEquipment>
+    </div>
+    <div class="dialog-backpackPanel" v-show="exportSaveDataPanelOpened">
+      <div class="title">
+        <span>导出存档</span>
+        <i class="close" @click="closePanel"></i>
+      </div>
+      <div class="body"><textarea id="imSavedata" class="savedata-textarea" v-model="saveDateString"></textarea></div>
+
+      <div class="footer">
+        <div class="button" @click="copySavaData">复制文本到剪贴板</div>
+      </div>
+    </div>
+    <div class="dialog-backpackPanel" v-show="importSaveDataPanelOpened">
+      <div class="title">
+        <span>导入存档</span>
+        <i class="close" @click="closePanel"></i>
+      </div>
+      <div class="body">
+        <span class="prompt-message">* 手机用户长按没有粘贴请尝试使用输入法剪贴板功能</span>
+        <textarea id="exSavadata" class="savedata-textarea" @focus="saveDateString = ''" v-model="saveDateString" placeholder="清先输入存档数据"></textarea></div>
+      <div class="footer">
+        <div class="button" @click="importSaveData">导入</div>
+      </div>
+    </div>
     <div class="dialog-backpackPanel gm-panel" v-if="GMOpened">
       <div class="title">
         <span>GM面板</span>
         <i class="close" @click="closePanel"></i>
       </div>
       <div class="content">
-        lv:<input v-model="GMEquipLv" type="text" placeholder="随机生成一套输入等级的装备">
-        稀有度：<input v-model="GMEquipQu" type="text" placeholder="装备质量">
-        <div class="button" @click="createGMEquip">确定</div>
+        <div class="body">
+          <span class="prompt-message">* 随机生成一套指定等级与质量的装备</span>
+        lv:<input v-model="GMEquipLv" type="number" placeholder="装备等级1~110">
+        稀有度：<input v-model="GMEquipQu" type="number" placeholder="装备质量0~4">
+        <div class="button" @click="createGMEquip">确定</div></div>
       </div>
     </div>
-    <a class="github" target="_blank" @click="navToGithub" title="源码" src="https://github.com/Couy69/vue-idle-game"></a>
+    <extras></extras>
+    <qa></qa>
+    <setting></setting>
   </div>
 </template>
 <script>
@@ -188,7 +301,12 @@ import armorPanel from './component/armorPanel'
 import accPanel from './component/accPanel'
 import backpackPanel from './component/backpackPanel'
 import shopPanel from './component/shopPanel'
+import strengthenEquipment from './component/strengthenEquipment'
 import dungeons from './component/dungeons'
+import extras from './component/extras'
+import setting from './component/setting'
+import qa from './component/qa'
+import cTooltip from './uiComponent/tooltip'
 import { assist } from '../assets/js/assist';
 import { Base64 } from 'js-base64';
 import '../assets/js/handle';
@@ -197,41 +315,49 @@ export default {
   mixins: [assist],
   data() {
     return {
+      GMmodel: false,
       time: '00:00:00',
       sysInfo: {},
       weaponShow: false,
       armorShow: false,
-      autoHealthRecovery: '',
       accShow: false,
+      equiShow: false,
+      autoHealthRecovery: '',
       weapon: {},
       inDungeons: false,  //是否在副本进程中
       reChallenge: false,
+      upEChallenge: false,
+      reEChallenge: false,
       dungeons: '',
       acc: {},
       armor: {},
       backpackPanelOpened: false,
       shopPanelOpened: false,
+      importSaveDataPanelOpened: false,
+      exportSaveDataPanelOpened: false,
+      strengthenEquipmentPanelOpened: false,
       itemDialogStyle: {},
-      GMEquipLv: 1,
-      GMEquipQu: 2,
+      GMEquipLv: '',
+      GMEquipQu: '',
       GMOpened: false,
       needComparison: true,
       saveData: {},
-      debounceTime:{},  //防抖计时器
+      saveDateString: '',
+      debounceTime: {},  //防抖计时器
     };
   },
-  components: { weaponPanel, armorPanel, accPanel, dungeons, backpackPanel, shopPanel },
+  components: { weaponPanel, armorPanel, accPanel, dungeons, backpackPanel, shopPanel, cTooltip, strengthenEquipment,extras,qa ,setting},
   created() {
     // 窗口自适应
     window.onresize = () => {
       if (this.debounceTime) {
         clearTimeout(this.debounceTime);
       }
-      this.debounceTime = setTimeout( ()=> {
+      this.debounceTime = setTimeout(() => {
         this.debounceTime = null;
         this.initial()
       }, 200);
-      
+
     };
     this.initial()
 
@@ -247,8 +373,7 @@ export default {
         this.$store.commit('set_player_weapon', this.$deepCopy(this.saveData.playerEquipment.playerWeapon))
         this.$store.commit('set_player_armor', this.$deepCopy(this.saveData.playerEquipment.playerArmor))
         this.$store.commit('set_player_acc', this.$deepCopy(this.saveData.playerEquipment.playerAcc))
-
-        this.$store.commit('set_player_gold', parseInt(this.saveData.gold) || 0)
+        this.$store.commit('reset_player_gold', parseInt(this.saveData.gold) || 0)
         this.$store.commit('set_endless_lv', parseInt(this.saveData.endlessLv) || 0)
       }
       else {
@@ -309,11 +434,93 @@ export default {
         element.scrollTop = element.scrollHeight + 20
       })
     },
-
+    upEChallenge(){
+      this.reEChallenge = !this.upEChallenge
+    },
+    reEChallenge(){
+      this.upEChallenge = !this.reEChallenge
+    },
+    GMEquipLv(){
+      this.GMEquipLv = this.GMEquipLv>110?110:this.GMEquipLv
+      this.GMEquipLv = this.GMEquipLv<1?1:this.GMEquipLv
+    },
+    GMEquipQu(){
+      this.GMEquipQu = this.GMEquipQu>4?4:this.GMEquipQu
+      this.GMEquipQu = this.GMEquipQu<0?0:this.GMEquipQu
+    }
   },
   methods: {
-    navToGithub(){
-      window.open('https://github.com/Couy69/vue-idle-game','_blank'); 
+    navToGithub() {
+      window.open('https://github.com/Couy69/vue-idle-game', '_blank');
+    },
+    copySavaData() {
+      var imSavadataTextArea = document.getElementById("imSavedata");
+      imSavadataTextArea.select(); // 选中文本
+      document.execCommand("copy"); // 执行浏览器复制命令
+      this.$store.commit("set_sys_info", {
+        msg: `
+                已经复制存档了，建议保存到备忘录
+              `,
+        type: 'win'
+      });
+      this.closePanel()
+    },
+    pasteSaveData() {
+
+    },
+    exportSavedata() {
+      let backpackPanel = this.findComponentDownward(
+        this,
+        "backpackPanel",
+      );
+      this.exportSaveDataPanelOpened = true
+      var data = {
+        playerEquipment: {
+          playerWeapon: this.$store.state.playerAttribute.weapon,
+          playerArmor: this.$store.state.playerAttribute.armor,
+          playerAcc: this.$store.state.playerAttribute.acc,
+        },
+        backpackEquipment: backpackPanel.grid,
+        gold: this.$store.state.playerAttribute.GOLD,
+        endlessLv: this.$store.state.playerAttribute.endlessLv,
+      }
+      this.saveDateString = Base64.encode(Base64.encode(JSON.stringify(data)))
+    },
+    importSaveData() {
+      if (!this.saveDateString) {
+        this.$store.commit("set_sys_info", {
+          msg: `
+                清先输入存档数据！
+              `,
+          type: 'warning'
+        });
+      }
+      try {
+        this.saveData = JSON.parse(Base64.decode(Base64.decode(this.saveDateString)))
+        this.$store.commit('set_player_weapon', this.$deepCopy(this.saveData.playerEquipment.playerWeapon))
+        this.$store.commit('set_player_armor', this.$deepCopy(this.saveData.playerEquipment.playerArmor))
+        this.$store.commit('set_player_acc', this.$deepCopy(this.saveData.playerEquipment.playerAcc))
+
+        this.$store.commit('reset_player_gold', parseInt(this.saveData.gold) || 0)
+        this.$store.commit('set_endless_lv', parseInt(this.saveData.endlessLv) || 0)
+        var backpackPanel = this.findComponentDownward(this, 'backpackPanel')
+        backpackPanel.grid = this.saveData.backpackEquipment
+        this.$store.commit("set_sys_info", {
+          msg: `
+                存档成功导入了
+              `,
+          type: 'win'
+        });
+        this.closePanel()
+      } catch (error) {
+        console.log(error)
+        this.$store.commit("set_sys_info", {
+          msg: `
+                糟糕，存档坏了！
+              `,
+          type: 'warning'
+        });
+      }
     },
     windowVisibilitychange() {
       if (!this.inDungeons) {
@@ -327,7 +534,7 @@ export default {
         }, 1000)
       }
     },
-    saveGame() {
+    async saveGame(needInfo) {
       var data = {}
       var backpackPanel = this.findComponentDownward(
         this,
@@ -346,12 +553,31 @@ export default {
       var saveData = Base64.encode(Base64.encode(JSON.stringify(data)))
       localStorage.setItem('_sd', saveData)
 
-      this.$store.commit("set_sys_info", {
+      needInfo&&this.$store.commit("set_sys_info", {
         msg: `
               游戏进度已经保存了。
             `,
         type: 'win'
       });
+
+      // try {
+      //   let data = await this.$api.post(
+      //     "v1/userInfo/add",
+      //     {
+      //       name:'couy',
+      //       password:'123456',
+      //       endlessLv:'2',
+      //       playtime:'12分11秒',
+      //       saveData:saveData,
+      //     }
+      //   );
+      //   console.log(data)
+      //   if (data.status == 200) {
+
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      // }
     },
     clearSysInfo() {
       this.$store.commit('clear_sys_info')
@@ -430,6 +656,9 @@ export default {
             `,
         type: 'warning'
       });
+      setTimeout(()=>{
+        
+      })
     },
     openMenuPanel(type) {
       this.backpackPanelOpened = this.shopPanelOpened = false
@@ -446,8 +675,15 @@ export default {
 
     },
     closePanel() {
-      this.backpackPanelOpened = this.shopPanelOpened = false
+      this.backpackPanelOpened = this.shopPanelOpened = this.importSaveDataPanelOpened = this.exportSaveDataPanelOpened = this.strengthenEquipmentPanelOpened = false
       this.GMOpened = false
+      this.saveDateString = ''
+
+      let equimentPanel = this.findComponentDownward(
+        this,
+        "equimentPanel",
+      );
+      equimentPanel.stopAutoStreng()
     },
     initial() {
       let html = document.documentElement;
@@ -459,10 +695,10 @@ export default {
       let rem = (wW * 100) / designSize;
       document.documentElement.style.fontSize = rem + "px";
 
-      if(document.documentElement.clientWidth<768){
-        this.$store.commit('set_operator_schema',true)
-      }else{
-        this.$store.commit('set_operator_schema',false)
+      if (document.documentElement.clientWidth < 768) {
+        this.$store.commit('set_operator_schema', true)
+      } else {
+        this.$store.commit('set_operator_schema', false)
       }
     },
     contextmenu(e) {
@@ -523,10 +759,6 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-@font-face {
-  font-family: "Lato-Regular";
-  src: url(../assets/fonts/Lato-Regular.ttf);
-}
 * {
   box-sizing: border-box;
   user-select: none;
@@ -536,8 +768,6 @@ a {
 }
 .main {
   background: #111;
-  font-family: Lato-Regular, "Noto Sans SC", "Noto Sans", "Source Sans Pro",
-    "Avenir", Helvetica, Arial, sans-serif !important;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -588,7 +818,8 @@ a {
       border: 2px solid #ccc;
       margin-top: 0.2rem;
       flex-wrap: wrap;
-      & > div {
+      & > div,
+      .item {
         cursor: pointer;
         width: 50%;
         height: 50%;
@@ -600,7 +831,11 @@ a {
           margin-left: 0.1rem;
           font-size: 0.24rem;
           font-weight: normal;
+          flex: 1;
         }
+      }
+      .item {
+        width: 100%;
       }
     }
   }
@@ -632,7 +867,7 @@ a {
       height: 0.7rem;
       margin: 0.1rem;
       margin-top: 0.08rem;
-      width: calc(50%);
+      width: calc(100%);
       display: flex;
       align-items: center;
       padding-left: 0.1rem;
@@ -735,7 +970,7 @@ a {
       width: calc(100% - 0.3rem);
       left: 0.15rem;
       height: 1rem;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(54, 121, 176, 0.68);
       text-align: center;
       font-size: 0.4rem;
       line-height: 1rem;
@@ -828,9 +1063,12 @@ a {
     flex-direction: column;
     cursor: pointer;
     margin: 0 0.2rem;
+    justify-content: space-between;
     span {
       color: #fff;
       font-size: 0.3rem;
+      line-height: 0.3rem;
+      padding: 0.1rem 0;
       font-weight: bold;
       text-shadow: 1px 1px 3px rgb(0, 0, 0);
     }
@@ -866,6 +1104,29 @@ a {
       background-image: url(../assets/icons/close.png);
       background-size: cover;
     }
+  }
+  .body {
+    padding: 0.1rem;
+    display: flex;
+    flex-direction: column;
+    .prompt-message {
+      font-size: 0.12rem;
+      margin: 0.04rem 0;
+    }
+  }
+  .savedata-textarea {
+    width: 300px;
+    height: 180px;
+    user-select: text;
+    padding: 2px;
+    background: rgba($color: #ffffff, $alpha: 0.8);
+  }
+  .footer {
+    border-top: 1px solid #ccc;
+    padding: 0.06rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 .item-close {
@@ -948,6 +1209,14 @@ a {
       margin-right: 0.05rem;
     }
   }
+  .handle-column{
+    display: flex;
+    flex-direction: column;
+    p{
+      display: flex;
+      align-items: center;
+    } 
+  }
   .jjj {
     font-size: 0.14rem;
     width: 100%;
@@ -977,14 +1246,5 @@ a {
     border: 1px solid #fff;
     white-space: nowrap;
   }
-}
-.github{
-  position: fixed;
-  width:.35rem;
-  height:.35rem;
-  background: url(../assets/icons/github.svg);
-  display: flex;
-  bottom: .2rem;
-  right: .2rem;
 }
 </style>

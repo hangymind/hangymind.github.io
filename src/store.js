@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import vueInstance from './main'
-
+import handle from './assets/js/handle'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    needStrengthenEquipment:{},  //设定当前需要强化的装备
     sysInfo: [{
       type: '',
       msg: "欢迎你，菜鸟勇士。"
@@ -185,7 +186,15 @@ export default new Vuex.Store({
           showValue: '',
         },
       }
-      entry = [].concat(warpon.type.entry).concat(warpon.extraEntry).concat(armor.type.entry).concat(armor.extraEntry).concat(acc.type.entry).concat(acc.extraEntry)
+      
+      let warponStrEntry = vueInstance.$deepCopy(warpon.type.entry)
+      let armorStrEntry = vueInstance.$deepCopy(armor.type.entry)
+      let accStrEntry = vueInstance.$deepCopy(acc.type.entry)
+      handle.CalculateStrAttr(warponStrEntry,warpon.enchantlvl||0)
+      handle.CalculateStrAttr(armorStrEntry,armor.enchantlvl||0)
+      handle.CalculateStrAttr(accStrEntry,acc.enchantlvl||0)
+
+      entry = [].concat(warponStrEntry).concat(warpon.extraEntry).concat(armorStrEntry).concat(armor.extraEntry).concat(accStrEntry).concat(acc.extraEntry)
       entry.map(item => {
         switch (item.type) {
           case 'ATK':
@@ -270,6 +279,9 @@ export default new Vuex.Store({
       var time = +new Date()
       var date = new Date(time + 8 * 3600 * 1000); // 增加8小时
       this.state.sysInfo[this.state.sysInfo.length - 1].time = date.toJSON().substr(11, 8).replace('T', ' ')
+      if(this.state.sysInfo.length>50){
+        this.state.sysInfo.shift()
+      }
     },
     clear_sys_info(state, data) {
       this.state.sysInfo.splice(1, this.state.sysInfo.length)
@@ -277,11 +289,17 @@ export default new Vuex.Store({
     set_player_gold(state, data) {
       this.state.playerAttribute.GOLD += parseInt(data);
     },
+    reset_player_gold(state, data){
+      this.state.playerAttribute.GOLD = parseInt(data);
+    },
     set_endless_lv(state, data) {
       this.state.playerAttribute.endlessLv = parseInt(data);
     },
     set_operator_schema(state, data) {
       this.state.operatorSchemaIsMobile = data;
+    },
+    set_need_strengthen_equipment(state, data) {
+      this.state.needStrengthenEquipment = data;
     },
     set_player_curhp(state, data) {
       var CURHP = this.state.playerAttribute.attribute.CURHP,
