@@ -14,7 +14,7 @@
         <p>收到了很多反馈我就不一一放出来了，不过提的建议我都会在更新时将你的名字po出来</p>
         <div class="scroll">
           <div class="info" v-for="(item,index) in update" :key="index">
-            <h1>{{item.name}}<span>({{item.created_at}})</span>:</h1>
+            <h1>{{item.name}}<span>({{GMTToStr(item.created_at)}})</span>:</h1>
             <p v-if="item.suggest"> {{item.suggest}}</p>
             <p style="padding-left:0"><img src="../../assets/img/35017881.jpg" alt="">:<span>{{item.standby1}}</span> </p>
           </div>
@@ -28,7 +28,7 @@
 import { assist } from '../../assets/js/assist';
 export default {
   name: "qa",
-  mixins:[assist],
+  mixins: [assist],
   data() {
     return {
       checkedUpdateInfo: false,
@@ -36,66 +36,67 @@ export default {
       // TODO: 
       update: [
         {
-        name: '木匠',
-        suggest: '越更新越强了',
-        created_at: '2020-11-26 19:13:42',
-        standby1: '装备越来越强，副本当然也越来越强了，现在的副本强度应该正正好',
-      },{
-        name: 'QQ',
-        suggest: '自动出售设置装备颜色 仓库安排上 好像没有人物等级的概念',
-        created_at: '2020-11-26 20:26:15',
-        standby1: '自动出售这个可以有，仓库暂时就不加了，人物等级没有这个设定（根据身上装备等级来的，同理商店装备的等级也是如此）',
-      },{
-        name: '木匠',
-        suggest: '无尽模式选择向上和重复的效果是一样的',
-        created_at: '2020-11-26 20:36:07',
-        standby1: '重复是循环当前层数，向上是挑战成功就继续下一层',
-      },{
-        name: 'Mrlin',
-        suggest: '强化不能继承？',
-        created_at: '2020-11-27 10:12:47',
-        standby1: '暂时不能，之后应该也不会加这个功能',
-      },{
-        name: '云玩家',
-        suggest: '您好，游戏很好玩，提一个小意见，就是强化的概率能显示出来吗？',
-        created_at: '2020-11-27 07:53:55',
-        standby1: '可以有,已经加到了强化tips中',
-      },{
-        name: '卜玉和银',
-        suggest: '素盏鸣那个戒指，我的一戴上去只有100滴血',
-        created_at: '2020-11-27 10:36:10',
-        standby1: '人物初始就是100滴血，说明你身上的装备并没有加血量的装备',
-      },{
-        name: 'zjw',
-        suggest: '已经装备的装备能不能强化呢',
-        created_at: '2020-11-27 10:44:04',
-        standby1: '脱下来才可以强化哦',
-      },{
-        name: 'masy',
-        suggest: '不能后台吗？发现一后台就自动暂停了。',
-        created_at: '2020-11-28 09:18:31',
-        standby1: '后台这个是游览器的限制，切换到后台就暂停了当前应用，谷歌游览器用户可以尝试地址栏输入 chrome://flags/,搜索calc选项改成Disabled',
-      },{
-        name: 'MarkH2',
-        suggest: '能加入稀有度的說明嗎?',
-        created_at: '2020-11-28 14:34:37',
-        standby1: '稀有等级：破旧-普通-神器-史诗-独特，稀有度越高词条越多同时属性越好',
-      }]
+          name: '木匠',
+          suggest: '越更新越强了',
+          created_at: '2020-11-26 19:13:42',
+          standby1: '装备越来越强，副本当然也越来越强了，现在的副本强度应该正正好',
+        }, {
+          name: 'QQ',
+          suggest: '自动出售设置装备颜色 仓库安排上 好像没有人物等级的概念',
+          created_at: '2020-11-26 20:26:15',
+          standby1: '自动出售这个可以有，仓库暂时就不加了，人物等级没有这个设定（根据身上装备等级来的，同理商店装备的等级也是如此）',
+        }, {
+          name: '木匠',
+          suggest: '无尽模式选择向上和重复的效果是一样的',
+          created_at: '2020-11-26 20:36:07',
+          standby1: '重复是循环当前层数，向上是挑战成功就继续下一层',
+        }, {
+          name: 'Mrlin',
+          suggest: '强化不能继承？',
+          created_at: '2020-11-27 10:12:47',
+          standby1: '暂时不能，之后应该也不会加这个功能',
+        }, {
+          name: '云玩家',
+          suggest: '您好，游戏很好玩，提一个小意见，就是强化的概率能显示出来吗？',
+          created_at: '2020-11-27 07:53:55',
+          standby1: '可以有,已经加到了强化tips中',
+        }, {
+          name: '卜玉和银',
+          suggest: '素盏鸣那个戒指，我的一戴上去只有100滴血',
+          created_at: '2020-11-27 10:36:10',
+          standby1: '人物初始就是100滴血，说明你身上的装备并没有加血量的装备',
+        }, {
+          name: 'zjw',
+          suggest: '已经装备的装备能不能强化呢',
+          created_at: '2020-11-27 10:44:04',
+          standby1: '脱下来才可以强化哦',
+        }, {
+          name: 'masy',
+          suggest: '不能后台吗？发现一后台就自动暂停了。',
+          created_at: '2020-11-28 09:18:31',
+          standby1: '后台这个是游览器的限制，切换到后台就暂停了当前应用，谷歌游览器用户可以尝试地址栏输入 chrome://flags/,搜索calc选项改成Disabled',
+        }, {
+          name: 'MarkH2',
+          suggest: '能加入稀有度的說明嗎?',
+          created_at: '2020-11-28 14:34:37',
+          standby1: '稀有等级：破旧-普通-神器-史诗-独特，稀有度越高词条越多同时属性越好',
+        }]
     };
   },
   mounted() {
     this.checkedUpdateInfo = localStorage.getItem('checkedUpdateInfo')
     this.update = this.update.reverse()
+    this.getSuggest()
   },
   methods: {
-    eastereEgg1(e){
-      setTimeout(()=>{
+    eastereEgg1(e) {
+      setTimeout(() => {
         this.reKeyCode = []
-      },3000)
+      }, 3000)
       this.reKeyCode.push(e.keyCode)
-      if(JSON.stringify(this.reKeyCode) == JSON.stringify(this.keyCode)){
+      if (JSON.stringify(this.reKeyCode) == JSON.stringify(this.keyCode)) {
         var p = this.findComponentUpward(this, 'index')
-        if(!p.GMmodel){
+        if (!p.GMmodel) {
           p.GMmodel = true
           this.$store.commit("set_sys_info", {
             msg: `
@@ -108,8 +109,8 @@ export default {
               开启了GM模式，如果你是玩家的话，请不要滥用GM模式哦。
             `,
             type: 'win'
-          });  
-        }  
+          });
+        }
       }
     },
     drawerOpen() {
@@ -121,44 +122,36 @@ export default {
       localStorage.setItem('checkedUpdateInfo', true)
       this.showExtrasInfo = false
     },
-    navToGithub() {
-      window.open('https://github.com/Couy69/vue-idle-game', '_blank');
+    GMTToStr(time) {
+      let date = new Date(time)
+      let Str = date.getFullYear() + '-' +
+        (date.getMonth() + 1) + '-' +
+        date.getDate() + ' ' +
+        date.getHours() + ':' +
+        date.getMinutes() + ':' +
+        date.getSeconds()
+      return Str
     },
-    async submitSuggest() {
-      if(this.disabled){
-        return
-      }
+    async getSuggest() {
       try {
         let data = await this.$api.post(
-          "v1/Suggest/add",
-          {
-            name: this.name,
-            suggest: this.suggest,
-          }
+          "v1/Suggest/getReviewed", {
+          page: 1,
+          size: 30
+        }
         );
-        console.log(data)
         if (data.data.error_code == 20000) {
-          this.$store.commit("set_sys_info", {
-            msg: `
-              你的建议已经提交了哦，十分感谢😘
-            `,
-            type: 'win'
-          });
+          this.update = data.data.content.rows
         } else {
-          this.$store.commit("set_sys_info", {
-            msg: `
-              提交失败：${data.data.msg}
-            `,
-            type: 'win'
-          });
+
         }
       } catch (error) {
         console.log(error);
       }
       this.disabled = true
-      setTimeout(()=>{
+      setTimeout(() => {
         this.disabled = false
-      },1000)
+      }, 1000)
     }
   }
 };
@@ -252,6 +245,7 @@ export default {
   .info {
     padding: 0.2rem;
     text-align: left;
+    user-select:text;
     h1 {
       margin: 0.06rem 0;
       font-size: 0.23rem;
@@ -270,7 +264,7 @@ export default {
       letter-spacing: 1px;
     }
     p {
-      margin: .1rem;
+      margin: 0.1rem;
       padding-left: 0.25rem;
       line-height: 0.2rem;
       color: #fafafa;
@@ -278,11 +272,11 @@ export default {
       letter-spacing: 1px;
       display: flex;
       align-items: center;
-      img{
-        margin-right: .1rem;
+      img {
+        margin-right: 0.1rem;
         border-radius: 50%;
-        width: .25rem;
-        height:.25rem
+        width: 0.25rem;
+        height: 0.25rem;
       }
     }
   }

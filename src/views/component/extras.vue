@@ -13,7 +13,8 @@
           <div class="info" v-for="(item,index) in update" :key="index">
             <h1> {{item.title}}</h1>
             <span v-if="item.desc"> {{item.desc}}</span>
-            <h2>功能调整</h2>
+            <h2 class="vision"  v-for="(v) in item.vision" :key="v.id" v-if="item.vision">{{v.vision}}:<a :href="v.href" target="_blank"> {{v.href}}</a></h2>
+            <h2 v-if="item.adjust">功能调整</h2>
             <p v-for="(v) in item.adjust" :key="v.id">{{v}}</p>
             <h2 v-if="item.majorization">优化</h2>
             <p v-for="(v) in item.majorization" :key="v.id">{{v}}</p>
@@ -62,12 +63,60 @@ export default {
       reKeyCode: [],
       update: [
         {
+          title: '历史版本',
+          vision: [{
+            vision:'测试服',
+            href: 'http://couy.xyz/rpg'
+          },{
+            vision:'1.2.2',
+            href: 'http://couy.xyz/v1.2.2'
+          }],
+          desc: '- 这里保留了历史版本，你仍然可以导入存档到旧版本游玩,测试服版本不保证可玩性',
+        },
+        {
+          title: '2020-12-09 (1.3.1)',
+          desc: '- 提交bug时希望准确描述一下😄',
+          adjust: [
+            '-  无尽难度：对应层数*10的极难副本 -> 对应层数*5的极难副本',
+          ],
+          majorization: [
+            '- 稍微调高了一点金币获取',
+            '- 自动强化需要两倍金币修改为不需要额外金币,与手动强化一致',
+            '- 调整了百分比词条的曲线，会在前期低等级时获得更高的属性',
+            '- 调高了部分带护甲词条的装备属性',
+          ],
+          bug: [
+            '- 已修复：装备强化后格挡值计算低于预期',
+          ]
+        },
+        {
+          title: '2020-12-08 (1.3.0)',
+          desc: '- 遇到了bug或者平衡性方面的问题希望大家可以反馈一下。',
+          adjust: [
+            '-  添加人物转生，转生时会获得转生点数来强化人物基础属性',
+            '-  修改副本刷新规则，现在副本将根据人物等级来刷新，点击菜单栏的刷新按钮来刷新(30S cd)',
+            '-  副本现在为随机生成，并不是以前的固定属性，难度增加，金币获取增加',
+            '-  饰品栏拆分为戒指与项链，添加新的项链装备',
+            '-  无尽挑战现在可以重置当前的挑战等级',
+            '-  添加格挡属性词条',
+            '-  护甲计算公式调整，极限值由100%调整至95%',
+          ],
+          majorization: [
+            '-  加入了新的字体',
+            '-  重铸时会显示当前词条的品质等级，方便确定当前词条是不是最佳属性',
+          ],
+          bug: [
+            '- 修复后台挑战副本失败时自动回血失效的bug',
+            '- 自动出售价格低于预期',
+          ]
+        },
+        {
           title: '2020-11-30 (1.2.2)',
           desc: '- 这次基本上都是些小优化。',
           adjust: [
             '-  现在支持自动强化了，可以在强化界面设定目标等级自动强化，不过花费金币为正常值的两倍',
             '-  点击右下角清除存档可以重新开始游戏，请谨慎操作或者备份原有存档',
-            '-  背包中可以设置自动出售的装备稀有度等级了',
+            '-  背包中可以设置自动出售的装备稀有度等级了（感谢执着的bug提交）',
           ],
           majorization: [
             '- 调整了一下手机端的显示，从后台来看用手机玩的用户好像也不少',
@@ -288,8 +337,17 @@ export default {
   padding: 0.2rem;
   z-index: 10;
   .scroll {
-    height: calc(100% - 0.5rem);
+    height: calc(100% - 2rem);
     overflow-y: auto;
+    .vision{
+      font-size: .16rem;
+    }
+    a{
+      color: #fff;
+      text-decoration: underline;
+      font-size: .14rem;
+      user-select:initial;
+    }
   }
   .close {
     cursor: pointer;
@@ -380,6 +438,9 @@ export default {
       display: flex;
       margin: 0.1rem;
       justify-content: space-between;
+    }
+    span{
+      text-align: center;
     }
   }
 }

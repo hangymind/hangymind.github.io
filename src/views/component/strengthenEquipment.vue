@@ -3,7 +3,7 @@
     <div class="equimentPanel" v-if="JSON.stringify(equiment)!='{}'">
       <cTooltip placement="bottom">
         <template v-slot:content>
-          <div class="panel-title">- 强化 -</div>
+          <div class="panel-title">- 强化 i -</div>
         </template>
         <template v-slot:tip>
           <p class="info">* 花费金币强化装备</p>
@@ -50,24 +50,25 @@
       </div>
       <cTooltip placement="bottom">
         <template v-slot:content>
-          <div class="panel-title">- 词条重铸 -</div>
+          <div class="panel-title">- 词条重铸 i -</div>
         </template>
         <template v-slot:tip>
           <p class="info">* 花费金币重铸装备词条</p>
+          <p class="info">* 重铸时词条颜色与百分比值显示了该词条的等级</p>
         </template>
       </cTooltip>
 
       <div class="extraEntry">
         <div class="extraEntry-item" v-for="(v,k) in equiment.extraEntry" :key="v.id" @click="recastTheEquiment(v,k)" @mouseover="changeRecastStatus(v,k,true)" @mouseleave="changeRecastStatus(v,k,false)">
-          <button class="btn btn-snake-border">
+          <button class="btn btn-snake-border" :class="qualityClass">
             <div class="btn-borders">
               <div class="border-top"></div>
               <div class="border-right"></div>
               <div class="border-bottom"></div>
               <div class="border-left"></div>
             </div>
-            <div v-if="v.recastStatus" class="recast-info" :class="{red:userGold<recastNeedGold}">点击花费{{recastNeedGold}}金币重铸</div>
-            <div v-else>{{v.name}} : {{v.showVal}}</div>
+            <div v-if="v.recastStatus" class="recast-info"><span :class="{red:userGold<recastNeedGold}"></span>点击花费{{recastNeedGold}}金币重铸</div>
+            <div v-else>{{v.name}} : {{v.showVal}} <span style="font-size:.12rem;margin-left:.06rem" v-if="v.EntryLevel"> ({{v.EntryLevel}})</span> </div>
           </button>
 
         </div>
@@ -87,10 +88,13 @@ export default {
   data() {
     return {
       equiment: {},
+      strengTime: '', //刷新副本计时器
+      strengTimeO: 60, //刷新副本时间间隔 单位：S
       autoStrengModel: false,
       autoStrengLv: 12,
       autoStrengTime: '',
       recast: false,
+      qualityClass: '',
       qualityProbability: [0.25, 0.55, 0.15, 0.05,],
       quality: [{
         name: '破旧',
@@ -117,16 +121,25 @@ export default {
     };
   },
   mounted() {
+    this.strengTime = setInterval(() => {
+      this.strengTimeO--
+      if (this.strengTimeO <= 0) {
+        clearInterval(this.strengTime)
+        this.strengTime = ''
+        this.strengTimeO = 60
+      }
+    }, 1000)
   },
   computed: {
+
     userGold() { return this.$store.state.playerAttribute.GOLD },
     item() { return this.$store.state.needStrengthenEquipment },
     strengthenNeedGold() {
-      var a = parseInt((this.equiment.lv + 1) * (1.1 ** (this.equiment.enchantlvl) ** 1.1) * (10 + this.equiment.lv / 5)) + 100
+      var a = parseInt((parseInt(this.equiment.lv) + 1) * (1.1 ** (this.equiment.enchantlvl) ** 1.1) * (10 + parseInt(this.equiment.lv) / 5)) + 100
       return a
     },
     recastNeedGold() {
-      var a = parseInt(this.equiment.lv * this.equiment.quality.qualityCoefficient * (200 + 10 * this.equiment.lv) / 4)
+      var a = parseInt(parseInt(this.equiment.lv) * this.equiment.quality.qualityCoefficient * (200 + 10 * parseInt(this.equiment.lv)) / 4)
       return a
     }
   },
@@ -140,13 +153,27 @@ export default {
   },
   methods: {
     changeRecastStatus(v, k, status) {
+      // 设置是否处于重置状态中
+      this.qualityClass = ''
       v.recastStatus = status
       this.$set(this.equiment.extraEntry, k, v)
     },
     // 强化装备
     startStreng(auto) {
-      var ra = auto?2:1
-      var needGold = this.strengthenNeedGold*ra
+      if (this.strengTime&&this.equiment.enchantlvl>=12) {
+        this.$store.commit("set_sys_info", {
+          msg: `
+          刷新页面时需要等待60S才能强化+12以上，仍需等待${this.strengTimeO}秒。
+        `,
+          type: 'wrning'
+        });
+        this.autoStrengModel = false
+        clearInterval(this.autoStrengTime)
+        return
+      }
+      // 自动强化需要金币倍率
+      var ra = auto ? 2 : 1
+      var needGold = this.strengthenNeedGold * 1  //ra
       if (this.$store.state.playerAttribute.GOLD < needGold) {
         this.stopAutoStreng()
         this.$store.commit("set_sys_info", {
@@ -201,7 +228,7 @@ export default {
             type: "win",
           });
         }
-      }, 300)
+      }, 150)
     },
     stopAutoStreng() {
       this.autoStrengModel = false
@@ -209,7 +236,6 @@ export default {
     },
     // 重铸装备
     recastTheEquiment(v, k) {
-      console.log(v, k)
       if (this.$store.state.playerAttribute.GOLD < this.recastNeedGold) {
         this.$store.commit("set_sys_info", {
           msg: `
@@ -222,6 +248,18 @@ export default {
       let newEntry = handle.createRandomEntry(this.equiment.lv, this.equiment.quality.qualityCoefficient)
       this.$set(this.equiment.extraEntry, k, newEntry);
       this.$store.commit("set_player_gold", -parseInt(this.recastNeedGold));
+      var a = parseInt(this.equiment.extraEntry[k].EntryLevel)
+      if (a < 25) {
+        this.qualityClass = 'D'
+      } else if (a < 50 && a >= 25) {
+        this.qualityClass = 'C'
+      } else if (a < 70 && a >= 50) {
+        this.qualityClass = 'B'
+      } else if (a < 90 && a >= 70) {
+        this.qualityClass = 'A'
+      } else {
+        this.qualityClass = 'S'
+      }
       this.changeTheEquiment()
     },
     //根据强化等级变动装备
@@ -290,7 +328,7 @@ export default {
   }
   .entry {
     width: 100%;
-    padding: 0.2rem 0.4rem;
+    padding: 0.2rem 0.3rem;
     display: flex;
     justify-content: space-around;
     font-size: 0.18rem;
@@ -366,10 +404,25 @@ $blue: #ccc;
   border-radius: 4px;
   transition: 0.2s;
   &:hover {
-    box-shadow: inset 0 0 7px 7px #53868ec9;
+    box-shadow: inset 0 0 7px 7px #53a28ec9;
     .btn-borders {
       display: flex !important;
     }
+  }
+  &.D:hover {
+    box-shadow: inset 0 0 7px 7px #a1a1a1a2;
+  }
+  &.C:hover {
+    box-shadow: inset 0 0 7px 7px #ffffffa2;
+  }
+  &.B:hover {
+    box-shadow: inset 0 0 7px 7px #ff00ffa2;
+  }
+  &.A:hover {
+    box-shadow: inset 0 0 7px 7px #f78918a2;
+  }
+  &.S:hover {
+    box-shadow: inset 0 0 7px 7px #ff0000a2;
   }
   .btn-text {
     color: $blue;
@@ -439,106 +492,6 @@ $blue: #ccc;
 
   to {
     transform: translateY(100%);
-  }
-}
-
-.fb {
-  width: 54px;
-  height: 50px;
-  line-height: 100px;
-  border-radius: 10%;
-  overflow: hidden;
-  position: relative;
-  // background: rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  i {
-    color: $blue;
-    font-size: 24px;
-    font-weight: bold;
-  }
-  .content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .fb-content {
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    background: #061b21;
-    border-radius: 8%;
-    display: flex;
-    z-index: 2;
-  }
-  &::after {
-    content: "";
-    position: absolute;
-    display: inline-block;
-    background-color: #3e94ce;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    animation: bgmove 2s linear infinite;
-    @keyframes bgmove {
-      0% {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-      }
-      25% {
-        top: 0;
-        left: 0;
-        width: 5px;
-        height: 100%;
-      }
-      50% {
-        top: calc(100% - 5px);
-        left: 0;
-        width: 100%;
-        height: 5px;
-      }
-      75% {
-        top: 0px;
-        left: calc(100% - 5px);
-        width: 5px;
-        height: 100%;
-      }
-      100% {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-      }
-    }
-  }
-  &::before {
-    content: "";
-    padding: 50%;
-    position: absolute;
-    top: -25%;
-    left: -25%;
-    bottom: -25%;
-    right: -25%;
-    transform-origin: center center;
-    transform: rotate(30deg) scale(2);
-    background: conic-gradient(
-      #3e94ce,
-      #3e94ce8a,
-      rgba(0, 0, 0, 0.06),
-      rgba(0, 0, 0, 0.06)
-    );
-    animation: rotate 2s linear infinite;
-    @keyframes rotate {
-      100% {
-        transform: rotate(-330deg) scale(2);
-      }
-    }
   }
 }
 

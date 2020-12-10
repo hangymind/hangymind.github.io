@@ -14,10 +14,9 @@
 </template>
 <script>
 import { assist } from '../../assets/js/assist';
-import { dungeonsConfig } from '../../assets/js/dungeonsConfig';
 export default {
   name: "dungeons",
-  mixins: [assist, dungeonsConfig],
+  mixins: [assist],
   data() {
     return {
       left: 0,
@@ -25,6 +24,8 @@ export default {
       timeOut: {},
       battleComTime: {},
       nextEvent: 1,
+      battleTime:2000,
+      moveTime:50,
       dungeons: {
         battleTime: 2000,
         name: '史莱姆森林',
@@ -100,6 +101,9 @@ export default {
       }
     };
   },
+  computed: {
+    reincarnationAttribute() { return this.$store.state.reincarnationAttribute },
+  },
   mounted() {
     // this.evenHandle()
 
@@ -114,12 +118,12 @@ export default {
             this.timeOut = setTimeout(() => {
               this.pro = setInterval(() => {
                 startEnent()
-              }, 50)
-            }, 2000)
+              }, this.moveTime+this.reincarnationAttribute.MOVESPEED)
+            }, this.battleTime+this.reincarnationAttribute.BATTLESPEED)
           } else {
             setTimeout(() => {
               this.eventEnd()
-            }, 2000)
+            }, this.battleTime+this.reincarnationAttribute.BATTLESPEED)
           }
 
           clearInterval(this.pro)
@@ -130,11 +134,11 @@ export default {
       this.eventBegin()
       this.pro = setInterval(() => {
         startEnent()
-      }, 50)
+      }, this.moveTime+this.reincarnationAttribute.MOVESPEED)
     },
     eventBegin() {
       this.$store.commit("set_sys_info", {
-        msg: "你已进入" + this.dungeons.name,
+        msg: "你已进入" + (this.dungeons.type=="endless"?'无尽（lv'+this.dungeons.lv+'）':this.dungeons.name),
         type: 'warning'
       });
       if (this.dungeons.name == '黑色火山') {
@@ -160,7 +164,7 @@ export default {
           });
           this.battleComTime = setTimeout(() => {
             this.battleCom(event)
-          }, 2000)
+          }, this.battleTime+this.reincarnationAttribute.BATTLESPEED)
           break;
 
         default:
@@ -208,6 +212,9 @@ export default {
             msg: "击败了最后的boss，你通关了！",
             type: 'warning'
           });
+        }
+
+        if(this.dungeons.lv>=10&&!this.$store.state.playerAttribute.endlessLv){
           this.$store.commit("set_sys_info", {
             msg: "开启了无尽挑战，可点击地图右上角副本图标进入",
             type: 'warning'
@@ -216,7 +223,6 @@ export default {
             msg: "试试你的极限吧",
             type: 'warning'
           });
-
           this.$store.commit('set_endless_lv', 1)
         }
         this.forcedToStopEvent()
@@ -229,6 +235,7 @@ export default {
         } else if (p.upEChallenge) {
           p.endlessLv = this.$store.state.playerAttribute.endlessLv
           p.dungeons.lv = this.$store.state.playerAttribute.endlessLv
+          p.showEndlessDungeonsInfo()
           p.eventBegin()
         } else {
           p.dungeons = ''
@@ -245,32 +252,16 @@ export default {
     },
     // 计算战斗过程
     battleCom(event) {
-      var playerAttribute = this.$store.state.playerAttribute.attribute,
+      let playerAttribute = this.$store.state.playerAttribute.attribute,
         battleTime,
         healthRecoverySpeed = this.$store.state.playerAttribute.healthRecoverySpeed,
         reducedDamage = this.$store.state.playerAttribute.attribute.REDUCDMG,
         playerDPS = playerAttribute.DPS,
-        monsterAttribute = this.$deepCopy(event.attribute) //HP: 100,ATK: 1,
+        playerBLOC = playerAttribute.BLOC.value,
+        monsterAttribute = this.$deepCopy(event.attribute), //HP: 100,ATK: 1,
+        p = this.findComponentUpward(this, 'index')
 
-      // 战斗伤害计算公式 
-      // 1 - 0.06 * armor / (1 + (0.06 * armor))
-
-      // 无尽模式下怪物加强
-      if (this.dungeons.type == 'endless') {
-        var endlessLv = this.$store.state.playerAttribute.endlessLv || 0
-        //设定一个怪物加强系数
-        monsterAttribute.ATK = monsterAttribute.ATK * (1 + 100 / 75)
-        monsterAttribute.HP = monsterAttribute.HP * (1 + 100 / 75)
-        monsterAttribute.ATK = monsterAttribute.ATK + endlessLv * 1000
-        monsterAttribute.HP = monsterAttribute.HP + endlessLv * 1100
-
-      } else {
-        //设定一个怪物加强系数
-        monsterAttribute.ATK = monsterAttribute.ATK * (1 + this.dungeons.lv / 55)
-        monsterAttribute.HP = monsterAttribute.HP * (1 + this.dungeons.lv / 55)
-      }
-
-      var playerDeadTime = (playerAttribute.CURHP.value / reducedDamage / monsterAttribute.ATK),
+      var playerDeadTime = (playerAttribute.CURHP.value+playerBLOC) / reducedDamage / monsterAttribute.ATK,
         monsterDeadTime = (monsterAttribute.HP / playerDPS)
 
       // 战斗获胜
@@ -278,9 +269,10 @@ export default {
         battleTime = monsterDeadTime
         var takeDmg = -battleTime * Number(monsterAttribute.ATK)
         takeDmg = parseInt(takeDmg * reducedDamage)
+        takeDmg = takeDmg + playerBLOC
+        takeDmg = takeDmg>-1?-1:takeDmg
         this.$store.commit('set_player_curhp', takeDmg)
 
-        // 无尽模式下怪物加强
         if (this.dungeons.type == 'endless') {
           this.$store.commit("set_sys_info", {
             msg: `
@@ -296,8 +288,22 @@ export default {
             type: 'win'
           });
         }
+        // 计算战利品获取
         this.caculateTrophy(event)
-
+        // 副本战斗成功时提升玩家等级
+        if(this.dungeons.lv>this.$store.state.playerAttribute.lv&&event.type=='boss'){
+          this.$store.commit("set_sys_info", {
+            msg: `
+              你升级了，可以刷新出更高等级的副本了。
+            `,
+            type: 'win'
+          });
+          this.$store.commit('set_player_lv', this.dungeons.lv)
+        }
+        // 高难度副本只可以挑战一次
+        if(this.dungeons.difficulty!=1){
+          p.dungeonsArr = p.dungeonsArr.filter(({ id }) => id !== this.dungeons.id);
+        }
       } else {
         // 玩家死亡
         this.$store.commit('set_player_curhp', 'full')
@@ -307,14 +313,21 @@ export default {
         this.timeOut = {}
         this.left = 0
         this.nextEvent = 1
-        var p = this.findComponentUpward(this, 'index')
         p.inDungeons = false
         this.dungeons = {}
         var takeDmg = monsterDeadTime * Number(monsterAttribute.ATK)
         takeDmg = parseInt(takeDmg * reducedDamage)
+        takeDmg = takeDmg - playerBLOC
+        takeDmg = takeDmg<1?1:takeDmg
         this.$store.commit("set_sys_info", {
           msg: `
               战斗失败！受到了${takeDmg}点伤害
+            `,
+          type: 'warning'
+        });
+        this.$store.commit("set_sys_info", {
+          msg: `
+              你可以尝试强化或者重铸装备之后在来挑战哦
             `,
           type: 'warning'
         });
@@ -328,22 +341,23 @@ export default {
       var lv = this.dungeons.lv
       // 获取独特装备
       if (event.type == 'boss' && this.dungeons.type != 'endless') {
-        var randow = 0.96
-        if (this.dungeons.name == '黑色火山') {
-          randow = 0.92
-        }
+        var randow = 1 - 0.02*((this.dungeons.difficulty-1)*2+1)
         if (Math.random() > randow) {
           var random = Math.random()
           if (random <= 0.3 && random > 0) {
             var b = this.findBrothersComponents(this, 'weaponPanel', false)[0]
             var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
             items.push(JSON.parse(item))
-          } else if (random <= 0.6 && random > 0.3) {
+          } else if (random <= 0.5 && random > 0.3) {
             var b = this.findBrothersComponents(this, 'armorPanel', false)[0]
             var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
             items.push(JSON.parse(item))
+          }else if (random <= 0.75 && random > 0.5) {
+            var b = this.findBrothersComponents(this, 'ringPanel', false)[0]
+            var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
+            items.push(JSON.parse(item))
           } else {
-            var b = this.findBrothersComponents(this, 'accPanel', false)[0]
+            var b = this.findBrothersComponents(this, 'neckPanel', false)[0]
             var item = b.createNewItem(4, parseInt(lv + Math.random() * 6))
             items.push(JSON.parse(item))
           }
@@ -374,33 +388,46 @@ export default {
       } else {
         // 未获得装备
       }
+      //获得装备时
       if (equipQua != -1) {
         // this.createEquip(equipQua,lv)
-        var index = Math.floor((Math.random() * 3));
+        var index = Math.floor((Math.random() * 4));
         if (index == 0) {
           var b = this.findBrothersComponents(this, 'weaponPanel', false)[0]
           var item = b.createNewItem(equipQua, lv)
         } else if (index == 1) {
           var b = this.findBrothersComponents(this, 'armorPanel', false)[0]
           var item = b.createNewItem(equipQua, lv)
+        }else if (index == 2) {
+          var b = this.findBrothersComponents(this, 'ringPanel', false)[0]
+          var item = b.createNewItem(equipQua, lv)
         } else {
-          var b = this.findBrothersComponents(this, 'accPanel', false)[0]
+          var b = this.findBrothersComponents(this, 'neckPanel', false)[0]
           var item = b.createNewItem(equipQua, lv)
         }
         items.push(JSON.parse(item))
         var backpackPanel = this.findBrothersComponents(this, 'backpackPanel', false)[0]
+        var goldObtainRatio = 1
+        if (this.dungeons.type == 'endless') {
+          var endlessLv = this.$store.state.playerAttribute.endlessLv
+          goldObtainRatio = 1.5
+          items = []
+        }
         this.$store.commit("set_sys_info", {
           msg: `
-              获得了:金币${event.trophy.gold}
+              获得了:金币${parseInt(event.trophy.gold * goldObtainRatio)}
             `,
           type: 'trophy',
           equip: items
         });
-        this.$store.commit("set_player_gold", event.trophy.gold);
+        this.$store.commit("set_player_gold", parseInt(event.trophy.gold * goldObtainRatio));
+        if(this.dungeons.type == 'endless'){
+          return
+        }
         items.map(item => {
           // 当开启了自动出售并且新获得的装备品质低于史诗时，自动出售
-          if (backpackPanel.autoSell[equipQua]) {
-            var gold = item.lv * item.quality.qualityCoefficient * 10
+          if (backpackPanel.autoSell[equipQua]&&item.quality.name!="独特") {
+            var gold = item.lv * item.quality.qualityCoefficient * 30
             this.$store.commit("set_player_gold", parseInt(gold));
             this.$store.commit("set_sys_info", {
               msg: `
@@ -422,7 +449,7 @@ export default {
         var goldObtainRatio = 1
         if (this.dungeons.type == 'endless') {
           var endlessLv = this.$store.state.playerAttribute.endlessLv
-          goldObtainRatio += endlessLv / 50
+          goldObtainRatio = 2.6
         }
         this.$store.commit("set_sys_info", {
           msg: `

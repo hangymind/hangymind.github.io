@@ -204,14 +204,14 @@ export default {
         des: '大师大冒险家之剑',
         iconSrc: './icons/U_Sword07.png',
         entry: [{
-          'valCoefficient': 1.9,
+          'valCoefficient': 2.4,
           'value': '11',
           'showVal': '+11',
           type: 'ATK',
           'name': '攻击力'
         }, {
           type: 'HP',
-          'valCoefficient': 1.6,
+          'valCoefficient': 1.8,
           'value': '8',
           'showVal': '8',
           'name': '生命值'
@@ -221,14 +221,14 @@ export default {
         des: '六翼天使武刃',
         iconSrc: './icons/U_Sword08.png',
         entry: [{
-          'valCoefficient': 1.9,
+          'valCoefficient': 2.6,
           'value': '11',
           'showVal': '+11',
           type: 'ATK',
           'name': '攻击力'
         },{
           type: 'DEF',
-          'valCoefficient': 1.6,
+          'valCoefficient': 1.8,
           'value': '8',
           'showVal': '8',
           'name': '防御力'
@@ -243,6 +243,29 @@ export default {
           'showVal': '+11',
           type: 'ATK',
           'name': '攻击力'
+        }]
+      },{
+        name: '埃苏莱布斯军刀',
+        des: '',
+        iconSrc: './icons/U_Sword10.png',
+        entry: [{
+          'valCoefficient': 1.9,
+          'value': '11',
+          'showVal': '+11',
+          type: 'ATK',
+          'name': '攻击力'
+        },{
+          type: 'DEF',
+          'valCoefficient': 1.2,
+          'value': '8',
+          'showVal': '8',
+          'name': '防御力'
+        },{
+          type: 'BLOC',
+          'valCoefficient': 1.2,
+          'value': '8',
+          'showVal': '8',
+          'name': '格挡'
         }]
       },],
       category: [{
@@ -469,6 +492,13 @@ export default {
             item.value = random
             item.showVal = '+' + random + '%'
             break;
+          case 'BLOC':
+            var random = parseInt((lv * 0.2 * 2 + (Math.random() * lv / 2 + 1)))
+            random = parseInt(random * weapon.quality.qualityCoefficient)
+            random = random || 1
+            item.value = random
+            item.showVal = '+' + random
+            break;
           default:
             break;
         }
@@ -527,21 +557,21 @@ export default {
             item.showVal = '+' + random
             break;
           case 'ATKPERCENT':
-            var random = parseFloat(lv * 0.11 + (Math.random() * lv / 8 + 1)).toFixed(2)
+            var random = parseFloat(lv * 0.11 + (Math.random() * lv / 10 + 4)).toFixed(2)
             random = parseFloat(random * weapon.quality.qualityCoefficient).toFixed(2)
             random = random || 1
             item.value = random
             item.showVal = '+' + random + '%'
             break;
           case 'DEFPERCENT':
-            var random = parseFloat(lv * 0.1 + (Math.random() * lv / 8 + 1)).toFixed(2)
+            var random = parseFloat(lv * 0.1 + (Math.random() * lv / 10 + 4)).toFixed(2)
             random = parseFloat(random * weapon.quality.qualityCoefficient).toFixed(2)
             random = random || 1
             item.value = random
             item.showVal = '+' + random + '%'
             break;
           case 'HPPERCENT':
-            var random = parseFloat(lv * 0.13 + (Math.random() * lv / 8 + 1)).toFixed(2)
+            var random = parseFloat(lv * 0.13 + (Math.random() * lv / 10 + 4)).toFixed(2)
             random = parseFloat(random * weapon.quality.qualityCoefficient).toFixed(2)
             random = random || 1
             item.value = random

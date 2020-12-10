@@ -100,11 +100,12 @@ export default {
       this.grid = new Array(5).fill({});
       var wlv = Number(this.$store.state.playerAttribute.weapon.lv);
       var alv = Number(this.$store.state.playerAttribute.armor.lv);
-      var acclv = Number(this.$store.state.playerAttribute.acc.lv);
+      var ringlv = Number(this.$store.state.playerAttribute.ring.lv);
+      var necklv = Number(this.$store.state.playerAttribute.neck.lv);
       for (let i = 0; i < 5; i++) {
-        var lv = parseInt((wlv + alv + acclv) / 3 + Math.random() * 6);
-        //装备等级最高110
-        lv = lv > 110 ? 110 : lv
+        var lv = Math.floor(this.$store.state.playerAttribute.lv + Math.random() * 3);
+        //装备等级最高10
+        lv = lv > 100 ? 100 : lv
         this.createShopItem(lv);
       }
     },
@@ -121,18 +122,20 @@ export default {
         this.grid = new Array(5).fill({});
         var wlv = Number(this.$store.state.playerAttribute.weapon.lv);
         var alv = Number(this.$store.state.playerAttribute.armor.lv);
-        var acclv = Number(this.$store.state.playerAttribute.acc.lv);
+        var ringlv = Number(this.$store.state.playerAttribute.ring.lv);
+      var necklv = Number(this.$store.state.playerAttribute.neck.lv);
         for (let i = 0; i < 5; i++) {
-          var lv = parseInt((wlv + alv + acclv) / 3 + Math.random() * 6);
-          //装备等级最高110
-          lv = lv > 110 ? 110 : lv
+          var lv = Math.floor(this.$store.state.playerAttribute.lv + Math.random() * 3);
+          //装备等级最高100
+          lv = lv > 100 ? 100 : lv
           this.createShopItem(lv);
         }   
       }
      
     },
     createShopItem(lv) {
-      var equip = [0.4, 0.34, 0.25,0.01];
+      var equip = [0.4, 0.345, 0.25,0.005];
+      // var equip = [0, 0, 0,1];
       var equipQua = -1;
       var r = Math.random();
       if (r <= equip[0]) {
@@ -158,19 +161,22 @@ export default {
       }
       if (equipQua != -1) {
         // this.createEquip(equipQua,lv)
-        var index = Math.floor(Math.random() * 3);
+        var index = Math.floor(Math.random() * 4);
         if (index == 0) {
           var b = this.findBrothersComponents(this, "weaponPanel", false)[0];
           var item = b.createNewItem(equipQua, lv);
         } else if (index == 1) {
           var b = this.findBrothersComponents(this, "armorPanel", false)[0];
           var item = b.createNewItem(equipQua, lv);
+        } else if (index == 2) {
+          var b = this.findBrothersComponents(this, "ringPanel", false)[0];
+          var item = b.createNewItem(equipQua, lv);
         } else {
-          var b = this.findBrothersComponents(this, "accPanel", false)[0];
+          var b = this.findBrothersComponents(this, "neckPanel", false)[0];
           var item = b.createNewItem(equipQua, lv);
         }
         item = JSON.parse(item);
-        item.gold = parseInt(item.lv * item.quality.qualityCoefficient * (200 + 20 * item.lv))
+        item.gold = parseInt(item.lv * item.quality.qualityCoefficient * (250 + 20 * item.lv))
         for (let i = 0; i < this.grid.length; i++) {
           if (JSON.stringify(this.grid[i]).length < 3) {
             this.$set(this.grid, i, item);
@@ -213,7 +219,7 @@ export default {
     },
     closeItemInfo() {
       var p = this.findComponentUpward(this, "index");
-      p.weaponShow = p.armorShow = p.accShow = false;
+      p.weaponShow = p.armorShow = p.ringShow = p.neckShow = false;
     },
     buyTheEquipment() {
       // var gold =

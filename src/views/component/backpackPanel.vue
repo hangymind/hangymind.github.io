@@ -134,20 +134,20 @@ export default {
       ],
     };
     // this.$set(this.grid,0,item)
-    try {
-      var p = this.findComponentUpward(this, 'index')
-      if (JSON.stringify(p.saveData) != '{}') {
-        this.grid = p.saveData.backpackEquipment
-      }
-    } catch (error) {
-      console.log(error)
-      this.$store.commit("set_sys_info", {
-        msg: `
-              糟糕，存档坏了！
-            `,
-        type: 'warning'
-      });
-    }
+    // try {
+    //   var p = this.findComponentUpward(this, 'index')
+    //   if (JSON.stringify(p.saveData) != '{}') {
+    //     this.grid = p.saveData.backpackEquipment
+    //   }
+    // } catch (error) {
+    //   console.log(error)
+    //   this.$store.commit("set_sys_info", {
+    //     msg: `
+    //           糟糕，存档坏了！
+    //         `,
+    //     type: 'warning'
+    //   });
+    // }
 
   },
   methods: {
@@ -167,6 +167,9 @@ export default {
       })
       this.grid = this.$deepCopy(tem)
       tem = []
+    },
+    clear(){
+      this.grid = new Array(32).fill({});
     },
     // 一键出售
     sell() {
@@ -214,7 +217,7 @@ export default {
     },
     closeItemInfo() {
       var p = this.findComponentUpward(this, 'index')
-      p.weaponShow = p.armorShow = p.accShow = false
+      p.weaponShow = p.armorShow = p.ringShow  =p.neckShow = false
     },
     lockTheEquipment(v) {
       this.currentItem.locked = v;
@@ -229,9 +232,13 @@ export default {
           this.grid[this.currentItemIndex] = this.$store.state.playerAttribute.armor
           this.$store.commit('set_player_armor', this.currentItem)
           break;
-        case 'acc':
-          this.grid[this.currentItemIndex] = this.$store.state.playerAttribute.acc
-          this.$store.commit('set_player_acc', this.currentItem)
+        case 'ring':
+          this.grid[this.currentItemIndex] = this.$store.state.playerAttribute.ring
+          this.$store.commit('set_player_ring', this.currentItem)
+          break;
+        case 'neck':
+          this.grid[this.currentItemIndex] = this.$store.state.playerAttribute.neck
+          this.$store.commit('set_player_neck', this.currentItem)
           break;
         default:
           break;

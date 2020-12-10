@@ -4,6 +4,23 @@
 
       <cTooltip placement="bottom">
         <template v-slot:content>
+          <div class="lv">
+            <div class="value">
+              <span>lv {{playerLv}}</span>
+              <span style="font-size:0.16rem">转生次数：{{$store.state.reincarnation.count}}</span>
+            </div>
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* 玩家当前等级与转生次数</p>
+          <p class="info">* 成功挑战首领时会提升等级</p>
+          <p class="info">* 超过30级时可以转生获取更强力的初始属性</p>
+        </template>
+
+      </cTooltip>
+
+      <cTooltip placement="bottom">
+        <template v-slot:content>
           <div class="hp">
             <img src="../assets/icons/S_Holy01.png" alt="">
             <div class="value">
@@ -30,7 +47,7 @@
         <cTooltip placement="bottom">
           <template v-slot:content>
             <div class="item" title="攻击力">
-              <img src="../assets/icons/S_Sword06.png" alt="">
+              <img src="../assets/icons/ATK.png" alt="">
               <div class="value">
                 {{attribute.ATK.value}}
               </div>
@@ -44,23 +61,7 @@
         <cTooltip placement="bottom">
           <template v-slot:content>
             <div class="item">
-              <img src="../assets/icons/icon_11.png" alt="">
-              <div class="value">
-                {{attribute.DEF.value}} <span style="font-size:.14rem;">({{Math.round((1-attribute.REDUCDMG)*100)}}%)</span>
-              </div>
-            </div>
-          </template>
-          <template v-slot:tip>
-            <p class="info">* 角色防御力以及计算后的减伤比例</p>
-            <p class="info">* 减伤比例采用非线性计算，护甲越高收益越低</p>
-            <p class="info">* 显示为近似值，实际上永远不会到达100%减伤</p>
-          </template>
-        </cTooltip>
-
-        <cTooltip placement="bottom">
-          <template v-slot:content>
-            <div class="item">
-              <img src="../assets/icons/icon_78.png" alt="">
+              <img src="../assets/icons/CRIT.png" alt="">
               <div class="value">
                 {{attribute.CRIT.value}}%
               </div>
@@ -74,7 +75,7 @@
         <cTooltip placement="bottom">
           <template v-slot:content>
             <div class="item">
-              <img src="../assets/icons/S_Sword01.png" alt="">
+              <img src="../assets/icons/CRITDMG.png" alt="">
               <div class="value">
                 {{attribute.CRITDMG.value}}%
               </div>
@@ -85,13 +86,60 @@
           </template>
         </cTooltip>
 
+        <cTooltip placement="bottom">
+          <template v-slot:content>
+            <div class="item">
+              <img src="../assets/icons/icon_11.png" alt="">
+              <div class="value">
+                {{attribute.DEF.value}} <span style="font-size:.12rem;">({{((1-attribute.REDUCDMG)*100).toFixed(2)}}%)</span>
+              </div>
+            </div>
+          </template>
+          <template v-slot:tip>
+            <p class="info">* 角色防御力以及计算后的减伤比例</p>
+            <p class="info">* 减伤比例采用非线性计算，护甲越高收益越低</p>
+            <p class="info">* 显示为近似值，实际上永远不会到达100%减伤</p>
+          </template>
+        </cTooltip>
+
+        <!-- <cTooltip placement="bottom">
+          <template v-slot:content>
+            <div class="item">
+              <img src="../assets/icons/S_EVA.png" alt="">
+              <div class="value">
+                {{attribute.EVA.showValue}}
+              </div>
+            </div>
+          </template>
+          <template v-slot:tip>
+            <p class="info">* 角色闪避几率</p>
+            <p class="info">* 闪避几率采用非线性计算</p>
+            <p class="info">* 多个闪避来源自身乘法叠加</p>
+          </template>
+        </cTooltip> -->
+
+        <cTooltip placement="bottom">
+          <template v-slot:content>
+            <div class="item">
+              <img src="../assets/icons/S_BLOC.png" alt="">
+              <div class="value">
+                {{attribute.BLOC.showValue}}
+              </div>
+            </div>
+          </template>
+          <template v-slot:tip>
+            <p class="info">* 角色格挡伤害</p>
+            <p class="info">* 计算护甲后再计算格挡伤害就是最终受到的伤害</p>
+          </template>
+        </cTooltip>
+
       </div>
     </div>
     <div class="user-item">
       <div class="uii">
         <cTooltip placement="bottom">
           <template v-slot:content>
-            <div class="gold" v-if="attribute.DPS" :style="{fontSize:attribute.DPS>=10000?'.18rem':'.22rem'}">DPS: 
+            <div class="gold" v-if="attribute.DPS" :style="{fontSize:attribute.DPS>=10000?'.18rem':'.22rem'}">DPS:
               <span :style="{fontSize:attribute.DPS>=10000?'.18rem':'.22rem'}">{{(attribute.DPS).toFixed(2)}}</span>
             </div>
           </template>
@@ -102,7 +150,7 @@
         </cTooltip>
         <cTooltip placement="bottom">
           <template v-slot:content>
-            <div class="gold" :style="{fontSize:userGold>=1000000?'.18rem':'.22rem'}">金币: <span :style="{fontSize:userGold>=1000000?'.14rem':'.16rem'}">{{userGold}}</span></div>
+            <div class="gold" :style="{fontSize:userGold>=1000000?'.18rem':'.22rem'}">金币: <span :style="{fontSize:userGold>=1000000?'.14rem':'.16rem'}">{{(userGold || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,')}}</span></div>
           </template>
           <template v-slot:tip>
             <p class="info">* 你拥有的金币数量</p>
@@ -128,12 +176,20 @@
           <div class='name' :style="{color:playerArmor.quality.color}">{{playerArmor.type.name}} {{playerArmor.enchantlvl?'(+'+playerArmor.enchantlvl+')':''}}</div>
         </div>
       </div>
-      <div class="acc" @mouseover="showItemInfo($event,'acc',playerAcc,false)" @mouseleave="closeItemInfo">
-        <div class="title" v-if="playerAcc">
-          <div class='icon' :style="{'box-shadow':'inset 0 0 7px 2px '+playerAcc.quality.color}">
-            <img :src="playerAcc.type.iconSrc" alt="">
+      <div class="neck" @mouseover="showItemInfo($event,'neck',playerNeck,false)" @mouseleave="closeItemInfo">
+        <div class="title" v-if="playerNeck">
+          <div class='icon' :style="{'box-shadow':'inset 0 0 7px 2px '+playerNeck.quality.color}">
+            <img :src="playerNeck.type.iconSrc" alt="">
           </div>
-          <div class='name' :style="{color:playerAcc.quality.color}">{{playerAcc.type.name}} {{playerAcc.enchantlvl?'(+'+playerAcc.enchantlvl+')':''}}</div>
+          <div class='name' :style="{color:playerNeck.quality.color}">{{playerNeck.type.name}} {{playerNeck.enchantlvl?'(+'+playerNeck.enchantlvl+')':''}}</div>
+        </div>
+      </div>
+      <div class="ring" @mouseover="showItemInfo($event,'ring',playerRing,false)" @mouseleave="closeItemInfo">
+        <div class="title" v-if="playerRing">
+          <div class='icon' :style="{'box-shadow':'inset 0 0 7px 2px '+playerRing.quality.color}">
+            <img :src="playerRing.type.iconSrc" alt="">
+          </div>
+          <div class='name' :style="{color:playerRing.quality.color}">{{playerRing.type.name}} {{playerRing.enchantlvl?'(+'+playerRing.enchantlvl+')':''}}</div>
         </div>
       </div>
     </div>
@@ -152,20 +208,33 @@
         <div class="eventEnd button" @click='eventEnd'>结束挑战</div>
       </div>
       <div class="dungeons-Info" v-if="dungeons&&!inDungeons">
+        <i class="dungeons-re" v-if="dungeons.type=='endless'" @click="resetEndlessLv"></i>
         <i class="dungeons-close" @click="closeDungeonsInfo"></i>
-        <div class="dungeons-title">{{dungeons.name}}</div>
+        <div class="dungeons-title" v-if="dungeons.type=='endless'">当前副本：无尽</div>
+        <div class="dungeons-title" v-else>当前副本：lv{{dungeons.lv}}_{{dungeons.difficultyName}}</div>
         <div class="jjj">
           <div class="dungeons-dps" v-if="dungeons.type=='endless'">推荐DPS：???</div>
           <div class="dungeons-dps" v-else>推荐DPS：{{dungeons.needDPS}}</div>
           <div class="dungeons-lv" v-if="dungeons.type=='endless'">无尽层数:{{dungeons.lv}}</div>
           <div class="dungeons-lv" v-else>副本等级:{{dungeons.lv}}</div>
         </div>
-        <div class="dese"> -{{dungeons.name}}:{{dungeons.desc||'副本介绍'}}</div>
-        <!-- <div class="dese"> -{{dungeons.name}}:{{'副本介绍'}}</div> -->
-        <!-- <div class="dungeons-lv"> </div> -->
+        <div class="jjj">
+          <div class="dungeons-difficulty">当前副本难度等级：{{dungeons.difficultyName}}</div>
+        </div>
+        <div class="info" v-if="dungeons.type=='endless'">
+          <p>- 无尽难度大致为层数*5的极难副本难度</p>
+          <p>- 无尽模式下仅能获得金币，将不会有装备</p>
+          <p>- 无尽模式挑战成功会回满血</p>
+        </div>
+        <div class="info" v-else>
+          <p>- 副本难度等级分为：普通，困难，极难</p>
+          <p>- 难度越高装备爆率也相应提升</p>
+          <p>- 高难度仅能挑战一次</p>
+          <p>- 高难度下有几率出现套装装备(下个版本加入)</p>
+        </div>
         <div class="handle">
           <div v-if="dungeons.type!='endless'">
-            <input type="checkbox" name="" v-model="reChallenge"> 重复挑战
+            <p v-if="dungeons.difficulty==1"><input type="checkbox" name="" v-model="reChallenge"> 重复挑战</p>
           </div>
           <div class="handle-column" style="display:flex;flex-direction:column" v-else>
             <p><input type="checkbox" name="" v-model="upEChallenge"> 向上挑战</p>
@@ -173,63 +242,118 @@
           </div>
           <div class="dungeons-btn" @click="eventBegin()">开始挑战</div>
         </div>
-
       </div>
-      <div class="event-icon low-level" @click="showDungeonsInfo(0)" v-show='!inDungeons' style="    top: 48%;left: 10%;">
-        <span>lv1</span>
+      <div class="event-icon" :class="{'low-level':v.difficulty==1,'h-level':v.difficulty==2,'boss':v.difficulty==3}" v-for="(v,k) in dungeonsArr" :key="k" @click="showDungeonsInfo(k)" v-show='!inDungeons' :style="{top: v.top,left: v.left}">
+        <i class="icon-image"></i>
+        <span>lv{{v.lv}}</span>
       </div>
-      <div class="event-icon low-level" @click="showDungeonsInfo(1)" v-show='!inDungeons' style="top: 38%;left: 17%;"><span>lv5</span></div>
-      <div class="event-icon low-level" @click="showDungeonsInfo(2)" v-show='!inDungeons' style="top: 54%;left: 30%;"><span>lv10</span></div>
-      <div class="event-icon low-level" @click="showDungeonsInfo(3)" v-show='!inDungeons' style="top: 28%;left: 43%;"><span>lv15</span></div>
-      <div class="event-icon low-level" @click="showDungeonsInfo(4)" v-show='!inDungeons' style="top: 39%;left: 48%;"><span>lv20</span></div>
-      <div class="event-icon m-level" @click="showDungeonsInfo(5)" v-show='!inDungeons' style="top: 9%;left: 61%;"><span>lv25</span></div>
-      <div class="event-icon m-level" @click="showDungeonsInfo(6)" v-show='!inDungeons' style="top: 10%;left: 71%;"><span>lv30</span></div>
-      <div class="event-icon m-level" @click="showDungeonsInfo(7)" v-show='!inDungeons' style="top: 21%;left: 88%;"><span>lv35</span></div>
-      <div class="event-icon m-level" @click="showDungeonsInfo(8)" v-show='!inDungeons' style="top: 32%;left: 78%;"><span>lv40</span></div>
-      <div class="event-icon m-level" @click="showDungeonsInfo(9)" v-show='!inDungeons' style="top: 42%;left: 88%;"><span>lv45</span></div>
-      <div class="event-icon m-level" @click="showDungeonsInfo(10)" v-show='!inDungeons' style="top: 56%;left: 80%;"><span>lv50</span></div>
-      <div class="event-icon h-level" @click="showDungeonsInfo(11)" v-show='!inDungeons' style="top: 79%;left: 73%;"><span>lv55</span></div>
-      <div class="event-icon h-level" @click="showDungeonsInfo(12)" v-show='!inDungeons' style="top: 85%;left: 61%;"><span>lv60</span></div>
-      <div class="event-icon h-level" @click="showDungeonsInfo(13)" v-show='!inDungeons' style="top: 71%;left: 40%;"><span>lv70</span></div>
-      <div class="event-icon h-level" @click="showDungeonsInfo(14)" v-show='!inDungeons' style="top: 75%;left: 20%;"><span>lv80</span></div>
-      <div class="event-icon boss" @click="showDungeonsInfo(15)" v-show='!inDungeons' style="top: 56%;left: 51%;"><span>lv90</span></div>
-      <div class="event-icon boss" @click="showDungeonsInfo(16)" v-show='!inDungeons' style="top: 90%;left: 88%;"><span>lv100</span></div>
-      <div class="event-icon endless" v-if="endlessLv" @click="showDungeonsInfo(17)" v-show='!inDungeons' style="top: 10%;left: 18%;"><span>无尽</span></div>
+      <div class="event-icon endless" v-if="endlessLv&&playerLv>=10" @click="showEndlessDungeonsInfo()" v-show='!inDungeons' style="top: 6%;left: 16%;"><i class="icon-image"></i><span>无尽</span></div>
     </div>
     <div class="menu">
-      <div class="Backpack" @click="openMenuPanel('backpack')">
-        <img src="../assets/icons/menu/quest_icon_02.png" alt="">
-        <span>背 包</span>
-      </div>
-      <div class="Backpack" @click="openMenuPanel('shop')">
-        <img src="../assets/icons/menu/quest_icon_03.png" alt="">
-        <span>商 店</span>
-      </div>
-      <div class="Backpack" @click="saveGame">
-        <img src="../assets/icons/menu/icon_save.png" alt="">
-        <span>保 存</span>
-      </div>
-      <div class="Backpack" @click="exportSavedata">
-        <img src="../assets/icons/menu/icon-export.png" alt="">
-        <span class="compact">导出</span>
-      </div>
-      <div class="Backpack" @click="importSaveDataPanelOpened =true">
-        <img src="../assets/icons/menu/icon-import.png" alt="">
-        <span class="compact">导入</span>
-      </div>
-      <div class="Backpack" v-if="GMmodel" @click="GMOpened = true">
-        <img src="../assets/icons/menu/icon_85.png" alt="">
-        <span>GM</span>
-      </div>
+
+      <cTooltip :placement="'top'">
+        <template v-slot:content>
+          <div class="Backpack" @click="openMenuPanel('backpack')">
+            <img src="../assets/icons/menu/quest_icon_02.png" alt="">
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* 背包</p>
+        </template>
+      </cTooltip>
+
+      <cTooltip :placement="'top'">
+        <template v-slot:content>
+          <div class="Backpack" @click="openMenuPanel('shop')">
+            <img src="../assets/icons/menu/quest_icon_03.png" alt="">
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* 商 店</p>
+        </template>
+      </cTooltip>
+
+      <cTooltip :placement="'top'">
+        <template v-slot:content>
+          <div class="Backpack" @click="createdDungeons()">
+            <img src="../assets/icons/menu/refresh_de.png" alt="">
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* 刷新当前世界副本</p>
+          <p class="info">* 刷新有30秒钟的间隔</p>
+          <p class="info">* 刷新时有较低概率同时刷新出高难度副本</p>
+          <p class="info">* 刷新规则[lv-5,lv+6]</p>
+        </template>
+      </cTooltip>
+
+      <cTooltip :placement="'top'">
+        <template v-slot:content>
+          <div class="Backpack" @click="openMenuPanel('rein')">
+            <img src="../assets/icons/menu/quest_icon_00.png" alt="">
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* 角色转生菜单</p>
+          <p class="info">* 淦不过了？尝试转生来提升基础属性</p>
+        </template>
+      </cTooltip>
+
+      <cTooltip :placement="'top'">
+        <template v-slot:content>
+          <div class="Backpack" @click="saveGame">
+            <img src="../assets/icons/menu/icon_save.png" alt="">
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* 保存游戏</p>
+        </template>
+      </cTooltip>
+
+      <cTooltip :placement="'top'">
+        <template v-slot:content>
+          <div class="Backpack" @click="exportSavedata">
+            <img src="../assets/icons/menu/icon-export.png" alt="">
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* 导出游戏存档</p>
+        </template>
+      </cTooltip>
+
+      <cTooltip :placement="'top'">
+        <template v-slot:content>
+          <div class="Backpack" @click="importSaveDataPanelOpened =true">
+            <img src="../assets/icons/menu/icon-import.png" alt="">
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* 导入游戏存档</p>
+        </template>
+      </cTooltip>
+
+      <cTooltip :placement="'top'">
+        <template v-slot:content>
+          <div class="Backpack" v-if="GMmodel" @click="GMOpened = true">
+            <img src="../assets/icons/menu/icon_85.png" alt="">
+          </div>
+        </template>
+        <template v-slot:tip>
+          <p class="info">* GM模式</p>
+        </template>
+      </cTooltip>
+
     </div>
     <div class="dialog" :style='itemDialogStyle'>
       <weaponPanel :item="weapon" v-show="weaponShow"></weaponPanel>
       <weaponPanel :item="playerWeapon" v-show="weaponShow&&needComparison"></weaponPanel>
       <armorPanel :item="armor" v-show="armorShow"></armorPanel>
       <armorPanel :item="playerArmor" v-show="armorShow&&needComparison"></armorPanel>
-      <accPanel :item="acc" v-show="accShow"></accPanel>
-      <accPanel :item="playerAcc" v-show="accShow&&needComparison"></accPanel>
-      <div class="item-close" @click="closeItemInfo" v-if="(armorShow||accShow||weaponShow)&&needComparison&&operatorSchemaIsMobile">
+      <ringPanel :item="ring" v-show="ringShow"></ringPanel>
+      <ringPanel :item="playerRing" v-show="ringShow&&needComparison"></ringPanel>
+      <neckPanel :item="neck" v-show="neckShow"></neckPanel>
+      <neckPanel :item="playerNeck" v-show="neckShow&&needComparison"></neckPanel>
+      <div class="item-close" @click="closeItemInfo" v-if="(armorShow||ringShow||weaponShow||neckShow)&&needComparison&&operatorSchemaIsMobile">
         关闭对比
       </div>
     </div>
@@ -246,6 +370,13 @@
         <i class="close" @click="closePanel"></i>
       </div>
       <shopPanel></shopPanel>
+    </div>
+    <div class="dialog-backpackPanel" v-if="reinPanelOpened">
+      <div class="title">
+        <span>角色转生</span>
+        <i class="close" @click="closePanel"></i>
+      </div>
+      <reinPanel></reinPanel>
     </div>
     <div class="dialog-backpackPanel" v-show="strengthenEquipmentPanelOpened">
       <div class="title">
@@ -285,9 +416,12 @@
       <div class="content">
         <div class="body">
           <span class="prompt-message">* 随机生成一套指定等级与质量的装备</span>
-        lv:<input v-model="GMEquipLv" type="number" placeholder="装备等级1~110">
-        稀有度：<input v-model="GMEquipQu" type="number" placeholder="装备质量0~4">
-        <div class="button" @click="createGMEquip">确定</div></div>
+          lv:<input v-model="GMEquipLv" type="number" placeholder="装备等级1~110">
+          稀有度：<input v-model="GMEquipQu" type="number" placeholder="装备质量0~4">
+          增加金币：<input v-model="GMGold" type="number" placeholder="增加金币">
+          玩家等级：<input v-model="GMPlayerLv" type="number" placeholder="玩家等级：">
+          <div class="button" @click="createGMEquip">确定</div>
+        </div>
       </div>
     </div>
     <extras></extras>
@@ -298,9 +432,11 @@
 <script>
 import weaponPanel from './component/weaponPanel'
 import armorPanel from './component/armorPanel'
-import accPanel from './component/accPanel'
+import ringPanel from './component/ringPanel'
+import neckPanel from './component/neckPanel'
 import backpackPanel from './component/backpackPanel'
 import shopPanel from './component/shopPanel'
+import reinPanel from './component/reincarnationPanel'
 import strengthenEquipment from './component/strengthenEquipment'
 import dungeons from './component/dungeons'
 import extras from './component/extras'
@@ -309,7 +445,7 @@ import qa from './component/qa'
 import cTooltip from './uiComponent/tooltip'
 import { assist } from '../assets/js/assist';
 import { Base64 } from 'js-base64';
-import '../assets/js/handle';
+import handle from '../assets/js/handle'
 export default {
   name: "index",
   mixins: [assist],
@@ -320,7 +456,8 @@ export default {
       sysInfo: {},
       weaponShow: false,
       armorShow: false,
-      accShow: false,
+      ringShow: false,
+      neckShow: false,
       equiShow: false,
       autoHealthRecovery: '',
       weapon: {},
@@ -329,16 +466,23 @@ export default {
       upEChallenge: false,
       reEChallenge: false,
       dungeons: '',
-      acc: {},
+      dungeonsArr: [],
+      dungeonsTime: '', //刷新副本计时器
+      dungeonsTimeO: 30, //刷新副本时间间隔 单位：S
+      ring: {},
+      neck: {},
       armor: {},
       backpackPanelOpened: false,
+      reinPanelOpened: false,
       shopPanelOpened: false,
       importSaveDataPanelOpened: false,
       exportSaveDataPanelOpened: false,
       strengthenEquipmentPanelOpened: false,
       itemDialogStyle: {},
-      GMEquipLv: '',
-      GMEquipQu: '',
+      GMEquipLv: 110,
+      GMEquipQu: 4,
+      GMGold: 10000000,
+      GMPlayerLv: 1,
       GMOpened: false,
       needComparison: true,
       saveData: {},
@@ -346,7 +490,7 @@ export default {
       debounceTime: {},  //防抖计时器
     };
   },
-  components: { weaponPanel, armorPanel, accPanel, dungeons, backpackPanel, shopPanel, cTooltip, strengthenEquipment,extras,qa ,setting},
+  components: { weaponPanel, armorPanel, ringPanel, neckPanel, dungeons, backpackPanel, shopPanel, cTooltip, strengthenEquipment, extras, qa, setting, reinPanel },
   created() {
     // 窗口自适应
     window.onresize = () => {
@@ -366,32 +510,6 @@ export default {
       this.windowVisibilitychange()
     });
 
-    var sd = localStorage.getItem('_sd')
-    try {
-      if (sd) {
-        this.saveData = JSON.parse(Base64.decode(Base64.decode(sd)))
-        this.$store.commit('set_player_weapon', this.$deepCopy(this.saveData.playerEquipment.playerWeapon))
-        this.$store.commit('set_player_armor', this.$deepCopy(this.saveData.playerEquipment.playerArmor))
-        this.$store.commit('set_player_acc', this.$deepCopy(this.saveData.playerEquipment.playerAcc))
-        this.$store.commit('reset_player_gold', parseInt(this.saveData.gold) || 0)
-        this.$store.commit('set_endless_lv', parseInt(this.saveData.endlessLv) || 0)
-      }
-      else {
-        this.$store.commit('set_player_weapon', this.$deepCopy(this.playerWeapon))
-        this.$store.commit('set_player_armor', this.$deepCopy(this.playerArmor))
-        this.$store.commit('set_player_acc', this.$deepCopy(this.playerAcc))
-      }
-
-    } catch (error) {
-      console.log(error)
-      this.$store.commit("set_sys_info", {
-        msg: `
-              糟糕，存档坏了！
-            `,
-        type: 'warning'
-      });
-    }
-
   },
   mounted() {
     // 自动回血
@@ -399,6 +517,7 @@ export default {
       this.$store.commit('set_player_curhp', this.healthRecoverySpeed * (this.attribute.MAXHP.value / 50))
     }, 1000)
 
+    
     // 自动保存
     setInterval(() => {
       this.saveGame()
@@ -407,14 +526,20 @@ export default {
     this.sysInfo = this.$store.state.sysInfo
     this.weapon = this.playerWeapon
     this.armor = this.playerArmor
-    this.acc = this.playerAcc
+    this.ring = this.playerRing
+    this.neck = this.playerNeck
 
     //TODO:重新装备一次来解决不显示装备对比信息不显示的bug，不是最好但是是最快的
     {
+      this.$store.commit('set_player_ring', this.$deepCopy(this.playerRing))
       this.$store.commit('set_player_weapon', this.$deepCopy(this.playerWeapon))
       this.$store.commit('set_player_armor', this.$deepCopy(this.playerArmor))
-      this.$store.commit('set_player_acc', this.$deepCopy(this.playerAcc))
+      this.$store.commit('set_player_neck', this.$deepCopy(this.playerNeck))
     }
+    var sd = localStorage.getItem('_sd')
+    this.loadGame(sd)
+    //生成随机副本
+    this.createdDungeons()
   },
   computed: {
     attribute() { return this.$store.state.playerAttribute.attribute },
@@ -422,8 +547,10 @@ export default {
     userGold() { return this.$store.state.playerAttribute.GOLD },
     playerWeapon() { return this.$store.state.playerAttribute.weapon },
     playerArmor() { return this.$store.state.playerAttribute.armor },
-    playerAcc() { return this.$store.state.playerAttribute.acc },
+    playerRing() { return this.$store.state.playerAttribute.ring },
+    playerNeck() { return this.$store.state.playerAttribute.neck },
     endlessLv() { return this.$store.state.playerAttribute.endlessLv },
+    playerLv() { return this.$store.state.playerAttribute.lv },
     operatorSchemaIsMobile() { return this.$store.state.operatorSchemaIsMobile }
   },
   watch: {
@@ -434,24 +561,79 @@ export default {
         element.scrollTop = element.scrollHeight + 20
       })
     },
-    upEChallenge(){
+    upEChallenge() {
       this.reEChallenge = !this.upEChallenge
     },
-    reEChallenge(){
+    reEChallenge() {
       this.upEChallenge = !this.reEChallenge
     },
-    GMEquipLv(){
-      this.GMEquipLv = this.GMEquipLv>110?110:this.GMEquipLv
-      this.GMEquipLv = this.GMEquipLv<1?1:this.GMEquipLv
+    GMEquipLv() {
+      this.GMEquipLv = this.GMEquipLv > 110 ? 110 : this.GMEquipLv
+      this.GMEquipLv = this.GMEquipLv < 1 ? 1 : this.GMEquipLv
     },
-    GMEquipQu(){
-      this.GMEquipQu = this.GMEquipQu>4?4:this.GMEquipQu
-      this.GMEquipQu = this.GMEquipQu<0?0:this.GMEquipQu
+    GMEquipQu() {
+      this.GMEquipQu = this.GMEquipQu > 4 ? 4 : this.GMEquipQu
+      this.GMEquipQu = this.GMEquipQu < 0 ? 0 : this.GMEquipQu
     }
   },
   methods: {
     navToGithub() {
       window.open('https://github.com/Couy69/vue-idle-game', '_blank');
+    },
+    createdDungeons() {
+      if (this.dungeonsTime) {
+        this.$store.commit("set_sys_info", {
+          msg: `
+                刚刚才刷新过了，需要等待${this.dungeonsTimeO}秒才能刷新哦。
+              `,
+          type: 'wrning'
+        });
+        return
+      }
+      this.dungeonsTime = setInterval(() => {
+        this.dungeonsTimeO--
+        if (this.dungeonsTimeO <= 0) {
+          clearInterval(this.dungeonsTime)
+          this.dungeonsTime = ''
+          this.dungeonsTimeO = 30
+        }
+      }, 1000)
+      this.dungeonsArr = []
+      let Co = [0.85, 0.1, 0.05]
+      console.log(this.playerLv)
+      for (let i = this.playerLv - 1; i > this.playerLv - 5; i--) {
+        if (i < 1) {
+          break
+        }
+        let difficulty = 1, r = Math.random()
+        // 生成普通副本时有几率刷新高难度副本
+        if (r <= Co[0]) {
+          difficulty = 1
+        } else if (r < Co[1] + Co[0] && r >= Co[0]) {
+          difficulty = 2
+        } else {
+          difficulty = 3
+        }
+        this.dungeonsArr.push(handle.createRandomDungeons(i, 1))
+        if (difficulty != 1) {
+          this.dungeonsArr.push(handle.createRandomDungeons(i, difficulty))
+        }
+      }
+      for (let i = this.playerLv; i < this.playerLv + 6; i++) {
+        let difficulty = 1, r = Math.random()
+        // 生成普通副本时有几率刷新高难度副本
+        if (r <= Co[0]) {
+          difficulty = 1
+        } else if (r < Co[1] + Co[0] && r >= Co[0]) {
+          difficulty = 2
+        } else {
+          difficulty = 3
+        }
+        this.dungeonsArr.push(handle.createRandomDungeons(i, 1))
+        if (difficulty != 1) {
+          this.dungeonsArr.push(handle.createRandomDungeons(i, difficulty))
+        }
+      }
     },
     copySavaData() {
       var imSavadataTextArea = document.getElementById("imSavedata");
@@ -478,11 +660,18 @@ export default {
         playerEquipment: {
           playerWeapon: this.$store.state.playerAttribute.weapon,
           playerArmor: this.$store.state.playerAttribute.armor,
-          playerAcc: this.$store.state.playerAttribute.acc,
+          playerRing: this.$store.state.playerAttribute.ring,
+          playerNeck: this.$store.state.playerAttribute.neck,
         },
+        lv: this.$store.state.playerAttribute.lv,
         backpackEquipment: backpackPanel.grid,
         gold: this.$store.state.playerAttribute.GOLD,
         endlessLv: this.$store.state.playerAttribute.endlessLv,
+        rA: this.$store.state.reincarnationAttribute,
+        r: {
+          count: this.$store.state.reincarnation.count,
+          point: this.$store.state.reincarnation.point,
+        }
       }
       this.saveDateString = Base64.encode(Base64.encode(JSON.stringify(data)))
     },
@@ -495,39 +684,21 @@ export default {
           type: 'warning'
         });
       }
-      try {
-        this.saveData = JSON.parse(Base64.decode(Base64.decode(this.saveDateString)))
-        this.$store.commit('set_player_weapon', this.$deepCopy(this.saveData.playerEquipment.playerWeapon))
-        this.$store.commit('set_player_armor', this.$deepCopy(this.saveData.playerEquipment.playerArmor))
-        this.$store.commit('set_player_acc', this.$deepCopy(this.saveData.playerEquipment.playerAcc))
-
-        this.$store.commit('reset_player_gold', parseInt(this.saveData.gold) || 0)
-        this.$store.commit('set_endless_lv', parseInt(this.saveData.endlessLv) || 0)
-        var backpackPanel = this.findComponentDownward(this, 'backpackPanel')
-        backpackPanel.grid = this.saveData.backpackEquipment
-        this.$store.commit("set_sys_info", {
-          msg: `
-                存档成功导入了
-              `,
-          type: 'win'
-        });
-        this.closePanel()
-      } catch (error) {
-        console.log(error)
-        this.$store.commit("set_sys_info", {
-          msg: `
-                糟糕，存档坏了！
-              `,
-          type: 'warning'
-        });
-      }
+      this.loadGame(this.saveDateString)
+      this.closePanel()
     },
     windowVisibilitychange() {
       if (!this.inDungeons) {
+        if (!this.autoHealthRecovery) {
+          this.autoHealthRecovery = setInterval(() => {
+            this.$store.commit('set_player_curhp', this.healthRecoverySpeed * (this.attribute.MAXHP.value / 50))
+          }, 1000)
+        }
         return
       }
       if (document.hidden) {
         clearInterval(this.autoHealthRecovery)
+        this.autoHealthRecovery = ''
       } else {
         this.autoHealthRecovery = setInterval(() => {
           this.$store.commit('set_player_curhp', this.healthRecoverySpeed * (this.attribute.MAXHP.value / 50))
@@ -544,48 +715,122 @@ export default {
         playerEquipment: {
           playerWeapon: this.$store.state.playerAttribute.weapon,
           playerArmor: this.$store.state.playerAttribute.armor,
-          playerAcc: this.$store.state.playerAttribute.acc,
+          playerRing: this.$store.state.playerAttribute.ring,
+          playerNeck: this.$store.state.playerAttribute.neck,
         },
         backpackEquipment: backpackPanel.grid,
+        lv: this.$store.state.playerAttribute.lv,
         gold: this.$store.state.playerAttribute.GOLD,
         endlessLv: this.$store.state.playerAttribute.endlessLv,
+        rA: this.$store.state.reincarnationAttribute,
+        r: {
+          count: this.$store.state.reincarnation.count,
+          point: this.$store.state.reincarnation.point,
+        }
       }
       var saveData = Base64.encode(Base64.encode(JSON.stringify(data)))
       localStorage.setItem('_sd', saveData)
 
-      needInfo&&this.$store.commit("set_sys_info", {
+      needInfo && this.$store.commit("set_sys_info", {
         msg: `
               游戏进度已经保存了。
             `,
         type: 'win'
       });
+    },
+    loadGame(sd) {
+      try {
+        if (sd) {
+          //兼容存档
+          var saveDataStr = Base64.decode(Base64.decode(sd))
+          saveDataStr = saveDataStr.replace(/playerAcc/gi, 'playerRing')
+          saveDataStr = saveDataStr.replace(/acc/gi, "ring")
+          this.saveData = JSON.parse(saveDataStr)
 
-      // try {
-      //   let data = await this.$api.post(
-      //     "v1/userInfo/add",
-      //     {
-      //       name:'couy',
-      //       password:'123456',
-      //       endlessLv:'2',
-      //       playtime:'12分11秒',
-      //       saveData:saveData,
-      //     }
-      //   );
-      //   console.log(data)
-      //   if (data.status == 200) {
+          var backpackPanel = this.findComponentDownward(
+            this,
+            "backpackPanel",
+          );
+          if(JSON.stringify(this.saveData) != '{}'){
+            backpackPanel.grid = this.saveData.backpackEquipment
+          }
+          if (!this.saveData.playerEquipment.playerNeck) {
+            this.saveData.playerEquipment.playerNeck = {
+              "lv": 1,
+              itemType: 'neck',
+              "quality": {
+                name: '破旧',
+                qualityCoefficient: 0.7,
+                probability: '0.25',
+                color: '#a1a1a1',
+                extraEntryNum: 1,
+              },
+              "type": {
+                "name": "新手项坠",
+                "des": "一个普通的指环",
+                "iconSrc": "./icons/Ac_3.png",
+                "entry": [{
+                  "valCoefficient": 0.9,
+                  "value": 20,
+                  "showVal": "+20",
+                  "type": "HP",
+                  "name": "生命值"
+                }]
+              },
+              "extraEntry": [{
+                "type": "CRIT",
+                "value": 10,
+                "showVal": "+10%",
+                "name": "暴击率"
+              }]
+            }
+          }
+          this.$store.commit('set_player_ring', this.$deepCopy(this.saveData.playerEquipment.playerRing))
+          this.$store.commit('set_player_weapon', this.$deepCopy(this.saveData.playerEquipment.playerWeapon))
+          this.$store.commit('set_player_armor', this.$deepCopy(this.saveData.playerEquipment.playerArmor))
+          this.$store.commit('set_player_neck', this.$deepCopy(this.saveData.playerEquipment.playerNeck))
+          if (this.saveData.rA) {
+            this.saveData.rA && this.$store.commit('set_player_rein_attribute', this.$deepCopy(this.saveData.rA))
+          }
+          if (this.saveData.r) {
+            this.saveData.r && this.$store.commit('set_player_rein', this.$deepCopy(this.saveData.r))
+          }
+          this.$store.commit('reset_player_gold', parseInt(this.saveData.gold) || 0)
+          this.$store.commit('set_endless_lv', parseInt(this.saveData.endlessLv) || 0)
+          this.$store.commit('set_player_lv', parseInt(this.saveData.lv) || 0)
+        }
+        else {
+          this.$store.commit('set_player_ring', this.$deepCopy(this.playerRing))
+          this.$store.commit('set_player_weapon', this.$deepCopy(this.playerWeapon))
+          this.$store.commit('set_player_armor', this.$deepCopy(this.playerArmor))
+          this.$store.commit('set_player_neck', this.$deepCopy(this.playerNeck))
+        }
 
-      //   }
-      // } catch (error) {
-      //   console.log(error);
-      // }
+        this.$store.commit("set_sys_info", {
+          msg: `
+                读取存档成功
+              `,
+          type: 'win'
+        });
+      } catch (error) {
+        console.log(error)
+        this.$store.commit("set_sys_info", {
+          msg: `
+              糟糕，存档坏了！
+            `,
+          type: 'warning'
+        });
+      }
     },
     clearSysInfo() {
       this.$store.commit('clear_sys_info')
     },
     createGMEquip() {
+      this.$store.commit("set_player_gold", parseInt(this.GMGold));
       var b = this.findComponentDownward(this, "weaponPanel");
       var item = b.createNewItem(this.GMEquipQu, this.GMEquipLv);
       item = JSON.parse(item);
+      this.$store.commit('set_player_lv', this.GMPlayerLv)
       var backpackPanel = this.findComponentDownward(
         this,
         "backpackPanel",
@@ -609,7 +854,21 @@ export default {
           break;
         }
       }
-      var b = this.findComponentDownward(this, "accPanel");
+      var b = this.findComponentDownward(this, "ringPanel");
+      var item = b.createNewItem(this.GMEquipQu, this.GMEquipLv);
+      item = JSON.parse(item);
+      var backpackPanel = this.findComponentDownward(
+        this,
+        "backpackPanel",
+      );
+      for (let i = 0; i < backpackPanel.grid.length; i++) {
+        if (JSON.stringify(backpackPanel.grid[i]).length < 3) {
+          this.$set(backpackPanel.grid, i, item);
+          break;
+        }
+      }
+
+      var b = this.findComponentDownward(this, "neckPanel");
       var item = b.createNewItem(this.GMEquipQu, this.GMEquipLv);
       item = JSON.parse(item);
       var backpackPanel = this.findComponentDownward(
@@ -626,12 +885,17 @@ export default {
       this.GMOpened = false
     },
     showDungeonsInfo(k) {
-      var b = this.findComponentDownward(this, 'dungeons')
-      this.dungeons = b.dungeonsArr[k]
-      if (this.dungeons.type == 'endless') {
+      // var b = this.findComponentDownward(this, 'dungeons')
+      this.dungeons = this.dungeonsArr[k]
+      if(this.dungeons.difficulty!=1){
         this.reChallenge = false
-        this.dungeons.lv = this.$store.state.playerAttribute.endlessLv
       }
+    },
+    showEndlessDungeonsInfo() {
+      this.reChallenge = false
+      this.dungeons = handle.createRandomDungeons(this.$store.state.playerAttribute.endlessLv * 5, 3)
+      this.dungeons.lv = this.$store.state.playerAttribute.endlessLv
+      this.dungeons.type = 'endless'
     },
     closeDungeonsInfo() {
       this.dungeons = ''
@@ -656,8 +920,25 @@ export default {
             `,
         type: 'warning'
       });
-      setTimeout(()=>{
-        
+      setTimeout(() => {
+
+      })
+    },
+    resetEndlessLv() {
+      this.$message({
+        message: '这将重置你的无尽等级，确认操作吗？',
+        title: '提示',
+        confirmBtnText: '重置',
+        onClose: () => {
+          this.$store.commit("set_endless_lv", 1);
+          this.closeDungeonsInfo()
+          this.$store.commit("set_sys_info", {
+            msg: `
+              无尽挑战层数重置到了1级。
+            `,
+            type: 'win'
+          });
+        }
       })
     },
     openMenuPanel(type) {
@@ -669,13 +950,16 @@ export default {
         case 'shop':
           this.shopPanelOpened = !this.shopPanelOpened
           break;
+        case 'rein':
+          this.reinPanelOpened = !this.reinPanelOpened
+          break;
         default:
           break;
       }
 
     },
     closePanel() {
-      this.backpackPanelOpened = this.shopPanelOpened = this.importSaveDataPanelOpened = this.exportSaveDataPanelOpened = this.strengthenEquipmentPanelOpened = false
+      this.backpackPanelOpened = this.shopPanelOpened = this.importSaveDataPanelOpened = this.exportSaveDataPanelOpened = this.strengthenEquipmentPanelOpened = this.reinPanelOpened = false
       this.GMOpened = false
       this.saveDateString = ''
 
@@ -733,9 +1017,13 @@ export default {
           this.armor = item
           this.armorShow = true
           break;
-        case 'acc':
-          this.acc = item
-          this.accShow = true
+        case 'ring':
+          this.ring = item
+          this.ringShow = true
+          break;
+        case 'neck':
+          this.neck = item
+          this.neckShow = true
           break;
         default:
           break;
@@ -743,7 +1031,7 @@ export default {
     },
     closeItemInfo() {
       this.needComparison = true;
-      this.weaponShow = this.armorShow = this.accShow = false
+      this.weaponShow = this.armorShow = this.ringShow = this.neckShow = false
     },
     setSysInfo() {
       this.$store.commit("set_sys_info", {
@@ -785,7 +1073,7 @@ a {
     border: 2px solid #ccc;
     height: 4rem;
     width: 4rem;
-    padding: 0.2rem;
+    padding: 0.1rem;
     display: flex;
     flex-direction: column;
     .hp {
@@ -796,6 +1084,7 @@ a {
       border: 2px solid #ccc;
       align-items: center;
       padding-left: 0.2rem;
+      margin-bottom: 0.1rem;
       img {
         width: 0.5rem;
         height: 0.5rem;
@@ -807,31 +1096,57 @@ a {
         flex: 1;
       }
     }
+    .lv {
+      cursor: pointer;
+      height: 0.7rem;
+      width: 100%;
+      display: flex;
+      border: 2px solid #ccc;
+      align-items: center;
+      padding-left: 0.2rem;
+      margin-bottom: 0.1rem;
+      img {
+        width: 0.5rem;
+        height: 0.5rem;
+      }
+      .value {
+        display: flex;
+        justify-content: space-around;
+        font-size: 0.26rem;
+        font-weight: bold;
+        text-align: center;
+        flex: 1;
+        align-items: center;
+      }
+    }
     .other {
       img {
-        width: 0.4rem;
-        height: 0.4rem;
+        width: 0.35rem !important;
+        height: 0.35rem !important;
       }
       display: flex;
       flex: 1;
-      padding: 0.2rem;
+      padding: 0.1rem;
       border: 2px solid #ccc;
-      margin-top: 0.2rem;
       flex-wrap: wrap;
       & > div,
       .item {
         cursor: pointer;
-        width: 50%;
+        width: 33.3%;
         height: 50%;
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        padding-left: 0.2rem;
+        padding-top: 0.05rem;
+        flex-direction: column;
         .value {
-          margin-left: 0.1rem;
-          font-size: 0.24rem;
+          margin-top: 0.06rem;
+          font-size: 0.23rem;
           font-weight: normal;
           flex: 1;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
         }
       }
       .item {
@@ -850,7 +1165,7 @@ a {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    padding: 0.4rem 0;
+    padding: 0.2rem 0;
     padding-top: 0.1rem;
     cursor: pointer;
     & > div {
@@ -885,7 +1200,7 @@ a {
     }
     .title {
       display: flex;
-      padding: 0.1rem;
+      padding: 0.05rem;
       width: 100%;
       .icon {
         width: 0.56rem;
@@ -897,7 +1212,7 @@ a {
         border-radius: 0.04rem;
       }
       .name {
-        font-size: 0.22rem;
+        font-size: 0.2rem;
         height: 0.46rem;
         margin-left: 0.2rem;
         line-height: 0.46rem;
@@ -987,40 +1302,82 @@ a {
       position: absolute;
       cursor: pointer;
       width: 0.55rem;
-      height: 0.55rem;
-      background-image: url(../assets/icons/icon_81.png);
-      border-radius: 50%;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      background-repeat: no-repeat;
-      background-position: center;
-      background-color: rgba(245, 54, 54, 0.7);
-      box-shadow: 0 0 4px 4px rgba(184, 171, 255, 70%);
+      height: 0.75rem;
+      border: 1px solid #111;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      box-shadow: 0 0 4px 4px rgba(100, 255, 36, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      // transform: translate(-50%, -50%);
+      // background-image: url(../assets/icons/icon_81.png);
+      // background-repeat: no-repeat;
+      // background-position: top center;
+      // background-color: rgba(245, 54, 54, 0.7);
+      // background-size: 30px 29px;
+      .icon-image {
+        width: .45rem;
+        height:.45rem;
+        border-radius: 50%;
+        background-image: url(../assets/icons/menu/d1.png);
+        background-color: rgba(100, 255, 36, 0.6);
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: 30px 29px;
+      }
       span {
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
+        // position: absolute;
+        // top: 100%;
+        // left: 50%;
+        // transform: translateX(-50%);
         text-shadow: 1px 1px 3px rgb(0, 0, 0);
         white-space: nowrap;
+        width: 100%;
+        text-align: center;
+        border-top: 1px solid rgba(100, 255, 36, 0.6);
+        margin-top: .03rem;
+        font-size: .14rem;
       }
     }
     .low-level {
-      background-color: rgba(100, 255, 36, 0.7);
-    }
-    .m-level {
-      background-color: rgba(0, 159, 245, 0.7);
+      // background-image: url(../assets/icons/menu/d1.png);
+      // background-color: rgba(100, 255, 36, 0.7);
     }
     .h-level {
-      background-color: rgba(245, 241, 0, 0.7);
+      box-shadow: 0 0 4px 4px rgba(245, 241, 0, 0.5);
+      .icon-image{
+        background-image: url(../assets/icons/menu/d2.png);
+        background-color: rgba(245, 241, 0, 0.6);
+      }
+      span{
+
+        border-top: 1px solid rgba(245, 241, 0, 0.6)
+      }
+      // background-image: url(../assets/icons/menu/d2.png);
+      // background-color: rgba(245, 241, 0, 0.7);
     }
     .boss {
-      background-image: url(../assets/icons/icon_83.png);
+      box-shadow: 0 0 4px 4px rgba(245, 54, 54, 0.5);
+      .icon-image{
+        background-image: url(../assets/icons/menu/d3.png);
+        background-color: rgba(245, 54, 54, 0.6);
+      }
+      span{
+        border-top: 1px solid rgba(245, 54, 54, 0.6);
+      }
+      // background-image: url(../assets/icons/menu/d3.png);
     }
     .endless {
-      background-image: url(../assets/icons/endless.png);
-      background-color: rgba(245, 69, 0, 0.7);
-      ox-shadow: 0 0 4px 4px #ffabab;
+      box-shadow: 0 0 4px 4px rgba(245, 69, 0, 0.5);
+      .icon-image{
+        background-image: url(../assets/icons/endless.png);
+        background-color: rgba(245, 69, 0, 0.6);
+      }
+      span{
+        border-top: 1px solid rgba(245, 69, 0, 0.6);
+      }
     }
   }
 }
@@ -1044,7 +1401,7 @@ a {
   left: 7.98rem;
   display: flex;
 }
-.accShow {
+.ringShow {
   top: 2.77rem;
   left: 7.98rem;
   display: flex;
@@ -1170,12 +1527,17 @@ a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 3rem;
+  width: 3.5rem;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 4px;
   border: 2px solid #ccc;
-  height: 4rem;
+  height: 3.5rem;
   padding: 0.1rem;
+  .info {
+    padding: 0.1rem 0.2rem;
+    font-size: 0.12rem;
+    color: #999;
+  }
   .dungeons-close {
     cursor: pointer;
     position: absolute;
@@ -1187,9 +1549,21 @@ a {
     background-image: url(../assets/icons/close.png);
     background-size: cover;
   }
+  .dungeons-re {
+    cursor: pointer;
+    position: absolute;
+    top: 0.1rem;
+    right: 0.5rem;
+    display: block;
+    width: 0.23rem;
+    height: 0.23rem;
+    background-image: url(../assets/icons/re.png);
+    background-size: cover;
+  }
   .dungeons-title {
     margin-top: 0.1rem;
-    font-size: 0.2rem;
+    font-size: 0.22rem;
+    margin-bottom: 0.2rem;
   }
   .handle {
     display: flex;
@@ -1197,7 +1571,12 @@ a {
     justify-content: space-between;
     white-space: nowrap;
     font-size: 0.14rem;
+    margin-top: 0.1rem;
     & > div {
+      display: flex;
+      align-items: center;
+    }
+    p {
       display: flex;
       align-items: center;
     }
@@ -1209,32 +1588,35 @@ a {
       margin-right: 0.05rem;
     }
   }
-  .handle-column{
+  .handle-column {
     display: flex;
     flex-direction: column;
-    p{
+    p {
       display: flex;
       align-items: center;
-    } 
+    }
   }
   .jjj {
-    font-size: 0.14rem;
+    font-size: 0.16rem;
     width: 100%;
-    justify-content: space-around;
+    justify-content: space-between;
     display: flex;
-    padding: 0.15rem;
+    padding: 0.15rem 0.25rem;
     align-items: center;
     .dungeons-dps {
       color: #f90202;
       text-shadow: 0px 0px 2px rgba(245, 54, 54, 0.7);
     }
+    .dungeons-difficulty {
+      text-align: right;
+    }
   }
-  .dese {
+  .desc {
     width: 100%;
-    height: 2rem;
+    height: 1.5rem;
     font-size: 0.14rem;
     border-top: 1px solid #ccc;
-    padding: 0.2rem;
+    padding: 0.1rem;
     color: #999;
   }
   .dungeons-btn {
