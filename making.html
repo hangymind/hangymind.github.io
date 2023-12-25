@@ -1,0 +1,19 @@
+<!DOCTYPE html><html><head>
+    <title>Hangy</title>
+    <style>
+        body {
+            background-color: #333;
+            color: #fff;
+            font-size: 128px;
+            font-weight: bold;
+            text-align: center;
+            padding-top: 100px;
+        }
+    </style></head><body>
+    <div id="loadingText">Making...</div>
+    <script>
+        // 延迟2秒后更改文字
+        setTimeout(function() {
+            document.getElementById("loadingText").innerHTML = "正在加载资源，校内网不可用";
+        }, 3000); // 2000毫秒等于2秒
+    </script></body></html>
