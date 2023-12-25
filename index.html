@@ -1,19 +1,18 @@
 <!DOCTYPE html><html><head>
-    <title>Hangy</title>
+    <title>Hangy loading</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             background-color: #333;
-            color: white;
-        }
-        .loading {
-            font-size: 120px;
+            color: #fff;
+            font-size: 128px;
             font-weight: bold;
+            text-align: center;
+            padding-top: 100px;
         }
     </style></head><body>
-    <div class="loading">Loading</div></body></html>
+    Loading...
+    <script>
+        setTimeout(function() {
+            window.location.href = "making"; // 替换为你想要跳转的空白页面的URL
+        }, 2000); // 2000毫秒等于2秒
+    </script></body></html>
