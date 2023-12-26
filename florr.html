@@ -276,7 +276,7 @@ function isBrowserSupported(){
 	gameScript.type = 'text/javascript';
 	// Loading errors can happen shortly after an update if the file isn't quite ready at static storage when servers are up
 	// Better to just try again instead of hanging. It's still really bad and shouldn't happen though.
-	gameScript.onerror = function(){ setTimeout(function(){ window.location.reload(true); }, 500); };
+	
 	gameScript.onload = function(){};
 	gameScript.src = "client.js";
 	var node = document.getElementsByTagName('script')[0];
