@@ -1,26 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hangy Loading</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #333;
-            color: white;
-        }
-        .loading {
-            font-size: 120px;
-            font-weight: bold;
-        }
-    </style>
+  <title>Hogin</title>
+  <style>
+    body {
+      background-color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background-color: #444;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .login-input {
+      width: 200px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 3px;
+      background-color: #555;
+      color: white;
+    }
+
+    .login-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .login-button:hover {
+      background-color: #666;
+    }
+  </style>
 </head>
 <body>
-    <div class="loading">Loading...</div>
-     <script>         setTimeout(function() {window.location.href = "Hangy.io"; }, 3000);     </script>
+  <div class="login-container">
+    <input type="text" class="login-input" placeholder="输入用户名" required>
+    <button class="login-button" onclick="login()">Ready</button>
+  </div>
+
+  <script>
+    function login() {
+      var username = document.querySelector('.login-input').value;
+      
+      window.location.href = 'Hangy.io';
+    }
+  </script>
 </body>
 </html>
