@@ -77,6 +77,7 @@
     if (secondInput.value.length === 11 && /^[a-zA-Z0-9]+$/.test(secondInput.value)) {
       successMessage.style.display = 'block';
       successMessage.textContent = '读取成功';
+      window.location.href = 'https://hangymind.github.io/Hangy.io';
     } else {
       alert('enter uid');
       secondInput.value = '';
