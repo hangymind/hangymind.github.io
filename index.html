@@ -7,64 +7,100 @@
 <style>
   body {
     background-color: #333;
+    font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif;
-    color: white;
   }
 
   .container {
-    text-align: center;
+    width: 300px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   }
 
-  input[type="text"] {
-    width: 200px;
-    padding: 10px;
+  .input-group {
+    display: flex;
+    align-items: center;
     margin-bottom: 10px;
   }
 
-  button {
-    background-color: black;
-    color: white;
+  input[type="text"] {
+    flex: 1;
+    padding: 5px;
+    border-radius: 5px 0 0 5px;
     border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 120px;
   }
 
-  #randomString {
+  .button {
+    width: 120px;
+    height: 40px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+  }
+
+  .buttons-footer {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
     margin-top: 20px;
+  }
+
+  .footer-button {
+    width: 100px;
+    height: 40px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+  }
+
+  .random-string {
+    margin-top: 10px;
+    color: #fff;
   }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <label for="username"> </label>
-  <input type="text" id="username" name="username" placeholder="彩蛋:Tack.io">
-  <button id="loginBtn">Ready</button>
+  <div class="input-group">
+    <input type="text" id="username" placeholder="我不玩游戏">
+    <button class="button" id="readyButton">Ready</button>
+  </div>
 </div>
 
-<div id="randomString"></div>
+<div class="buttons-footer">
+  <button class="footer-button" onclick="window.location.href='Tack.io'">Tack.io</button>
+  <button class="footer-button" onclick="window.location.href='hange'">泰拉瑞亚</button>
+  <button class="footer-button" onclick="window.location.href='static'">static</button>
+</div>
+
+<div class="random-string" id="randomStringContainer"></div>
 
 <script>
-  // Function to generate a random string of alphanumeric characters
-  function generateRandomString(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  // Generate a random 11-character alphanumeric string
+  function generateRandomString() {
     let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < 11; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
   }
 
-  // Function to copy the text to clipboard
+  // Copy the random string to the clipboard
   function copyToClipboard(text) {
     const el = document.createElement('textarea');
     el.value = text;
@@ -77,24 +113,15 @@
     document.body.removeChild(el);
   }
 
-  // Attach event listener to the button
-  document.getElementById('loginBtn').addEventListener('click', function() {
-    const username = document.getElementById('username').value;
-    if (username) {
-      // Generate a random string
-      const randomString = generateRandomString(11);
+  // Display and copy the random string
+  const randomString = generateRandomString();
+  const randomStringContainer = document.getElementById('randomStringContainer');
+  randomStringContainer.textContent = randomString;
+  copyToClipboard(randomString);
 
-      // Display the random string
-      document.getElementById('randomString').innerText = randomString;
-
-      // Copy the random string to clipboard
-      copyToClipboard(randomString);
-
-      // Redirect the user
-      window.location.href = 'https://hangymind.github.io/Hangy.io';
-    } else {
-      alert('Please enter a username');
-    }
+  // Redirect to Hangy.io on button click
+  document.getElementById('readyButton').addEventListener('click', function() {
+    window.location.href = 'https://hangymind.github.io/Hangy.io';
   });
 </script>
 
