@@ -2097,7 +2097,7 @@ class TowerFinally {
         let b = new TowerRay(0, 0, world);
         b.name = "2级Beta小岚专用光"
         b.r += 13;
-        b.damage = 90;
+        b.damage = 110;
         b.rangeR = 0;
         b.rayLen = 1000;
         b.rayWidth = 5;
@@ -2109,7 +2109,7 @@ class TowerFinally {
         b.levelUpArr = [];
         b.imgIndex = 57;
         b.price = 990;
-        b.comment = `全屏扫射，削了，vivo50加回来`
+        b.comment = `全屏扫射，加强了，vivo50削`
         return b;
     }
 }
