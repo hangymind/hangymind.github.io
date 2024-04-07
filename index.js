@@ -287,7 +287,7 @@ function endlessMode(mode, haveGroup = true) {
         if (isGamePause) {
             pauseBtn.innerHTML = "开始";
         } else {
-            pauseBtn.innerHTML = "暂停";
+            pauseBtn.innerHTML = "不要暂停";
         }
     })
 
@@ -330,7 +330,7 @@ function endlessMode(mode, haveGroup = true) {
             return;
         }
         if (world.rootBuilding.isDead()) {
-            alert("你失败了");
+            alert("你失败了！嘲讽！来自开发者的嘲讽！");
             location.reload();
             clearInterval(mainAni);
         }
