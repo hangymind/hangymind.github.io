@@ -18,7 +18,7 @@ class TowerFinally {
         ];
         res.levelDownGetter = null;
         res.price = 50 + Functions.TowerNumPriceAdded(world.batterys.length);
-        res.comment = "最基础的炮塔，想获得厉害的炮塔就要从它开始进化，但是基础炮塔不太能无限获取，获取基础炮塔越多，需要的费用就越贵，其实只是在限制你不能在舞台上摆放太多的炮塔造成卡顿而已啦。";
+        res.comment = "最基础的炮塔，想获得厉害的炮塔就要从它开始进化，但是基础炮塔不太能无限获取，获取基础炮塔越多，需要的费用就越贵，其实只是在限制你不能在舞台上摆放太多的炮塔造成卡顿而已啦。万恶之源";
 
         return res;
     }
@@ -40,7 +40,7 @@ class TowerFinally {
         res.levelDownGetter = TowerFinally.BasicCannon;
         res.imgIndex = 1;
         res.price = 60;
-        res.comment = "从基础炮塔升到这一个炮塔之后，接下来的炮塔都是中世纪风格的炮塔。";
+        res.comment = "从基础炮塔升到这一个炮塔之后，接下来的炮塔都是中世纪风格的炮塔。冷兵器";
 
         return res;
     }
@@ -1834,14 +1834,14 @@ class TowerFinally {
 
     static Thunder_Power_2(world) {
         let b = new TowerLaser(0, 0, world);
-        b.name = "2级强力雷电塔"
+        b.name = "2级强力雷电hange塔"
         b.r += 12;
         b.rangeR = 245;
         b.laserFreezeMax = 70;
-        b.laserBaseDamage = 700;
+        b.laserBaseDamage = 850;
         b.laserMaxDamage = 1000;
         b.laserDamagePreAdd = 3;
-        b.zapCount = 3;  // 最多目标打击数量
+        b.zapCount = 4;  // 最多目标打击数量
         b.damageMultipleRate = 2;  // 每多打一个目标，攻击伤害就翻多少倍
         b.zapLen = 90;  // 闪电连续段最长范围
         b.zapInitColor = new MyColor(255, 0, 255, 0.9);
@@ -1849,7 +1849,7 @@ class TowerFinally {
         b.levelUpArr = [];
         b.levelDownGetter = TowerFinally.Thunder_Power_1;
         b.imgIndex = 55;
-        b.price = 1000;
+        b.price = 1100;
         b.comment =  `能够发射一道闪电，击中敌人后会继续电传导击中附近${b.zapLen}范围内的敌人，进行如上操作${b.zapCount}次数，每次伤害是上一个击中目标的${b.damageMultipleRate}倍数累加，闪电的基础伤害是${b.laserBaseDamage}，最大蓄力伤害是${b.laserMaxDamage}`;
         return b;
     }
@@ -2095,9 +2095,9 @@ class TowerFinally {
 
     static Laser_Red_Beta_2(world) {
         let b = new TowerRay(0, 0, world);
-        b.name = "2级Beta红激光"
+        b.name = "2级Beta小岚专用光"
         b.r += 13;
-        b.damage = 100;
+        b.damage = 90;
         b.rangeR = 0;
         b.rayLen = 1000;
         b.rayWidth = 5;
@@ -2108,8 +2108,8 @@ class TowerFinally {
         b.levelDownGetter = TowerFinally.Laser_Red_Beta_1;
         b.levelUpArr = [];
         b.imgIndex = 57;
-        b.price = 1000;
-        b.comment = `全屏扫射`
+        b.price = 990;
+        b.comment = `全屏扫射，削了，vivo50加回来`
         return b;
     }
 }
