@@ -1396,7 +1396,7 @@ class TowerFinally {
 
     static Shotgun_2(world) {
         let b = new Tower(0, 0, world);
-        b.name = "2级快速散弹";
+        b.name = "dasb专用快速散弹";
         b.r += 11;
         b.rangeR = 260;
         b.bullySpeed = 2.8;
@@ -1412,8 +1412,8 @@ class TowerFinally {
         b.levelDownGetter = TowerFinally.Shotgun_1;
         b.levelUpArr = [];
         b.imgIndex = 44;
-        b.price = 800;
-        b.comment =  `发射的频率更快了，但是子弹的移动速度可能并不是很快`;
+        b.price = 750;
+        b.comment =  `发射的频率更快了，但是子弹的移动速度可能并不是很快，但是dasb快了`;
         b.audioSrcString = "sound/子弹音效/散弹子弹.mp3";
         return b;
     }
