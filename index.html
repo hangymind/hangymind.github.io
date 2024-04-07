@@ -1,129 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Hangy</title>
-<style>
-  body {
-    background-color: #333;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Interface</title>
+    <style>
+        body {
+            background-color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-  .container {
-    width: 300px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-  }
+        .container {
+            text-align: center;
+            color: white;
+        }
 
-  .input-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-  input[type="text"] {
-    flex: 1;
-    padding: 5px;
-    border-radius: 5px 0 0 5px;
-    border: none;
-  }
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-right: 10px;
+        }
 
-  .button {
-    width: 120px;
-    height: 40px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-  }
+        .button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
 
-  .buttons-footer {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin-top: 20px;
-  }
+        .button.ready {
+            width: 120px;
+        }
 
-  .footer-button {
-    width: 100px;
-    height: 40px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 0 10px;
-  }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
 
-  .random-string {
-    margin-top: 10px;
-    color: #fff;
-  }
-</style>
+        .sidebar-button {
+            display: block;
+            margin-bottom: 10px;
+            background-color: black;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .popup-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .popup-content {
+            line-height: 1.5;
+        }
+
+        .popup-content .line {
+            border-bottom: 1px solid gray;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="input-container">
+            <input type="text" id="username" placeholder="Username">
+            <button class="button ready" onclick="login()">ready</button>
+        </div>
+    </div>
 
-<div class="container">
-  <div class="input-group">
-    <input type="text" id="username" placeholder="Username">
-    <button class="button" id="readyButton">Ready</button>
-  </div>
-</div>
+    
 
-<div class="buttons-footer">
-  <button class="footer-button" onclick="window.location.href='newtest'">Alpha</button>
-  <button class="footer-button" onclick="window.location.href='hange'">泰拉瑞亚</button>
-  <button class="footer-button" onclick="window.location.href='static'">闲人免进</button>
-</div>
+    <button class="popup-trigger" onclick="showPopup()">Show Popup</button>
 
-<div class="random-string" id="randomStringContainer"></div>
+    <div class="popup" id="updateLogPopup">
+        <div class="popup-header">Update Log</div>
+        <div class="popup-content">
+            <div class="line">20240407更新了更新日志</div>
+            <div class="line">削了一些炮塔的op数值</div>
+            <div class="line">感谢了一下试玩游戏的人</div>
+            <!-- Add more lines as needed -->
+        </div>
+    </div>
 
-<script>
-  // Generate a random 11-character alphanumeric string
-  function generateRandomString() {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < 11; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  }
+    <div class="footer" id="footer"></div>
 
-  // Copy the random string to the clipboard
-  function copyToClipboard(text) {
-    const el = document.createElement('textarea');
-    el.value = text;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-  }
+    <script>
+        function login() {
+            const username = document.getElementById('username').value;
+            if (username) {
+                // Simulate the redirect
+                console.log(`Logging in as ${username}...`);
+                window.location.href = 'https://hangymind.github.io/newtest';
+            } else {
+                alert('Please enter a username!');
+            }
+        }
 
-  // Display and copy the random string
-  const randomString = generateRandomString();
-  const randomStringContainer = document.getElementById('randomStringContainer');
-  randomStringContainer.textContent = randomString;
-  copyToClipboard(randomString);
+        function goToPage1() {
+            alert('Navigating to Page 1...');
+            // Replace with actual navigation logic
+        }
 
-  // Redirect to Hangy.io on button click
-  document.getElementById('readyButton').addEventListener('click', function() {
-    window.location.href = 'https://hangymind.github.io/Hangy.io';
-  });
-</script>
+        function goToPage2() {
+            alert('Navigating to Page 2...');
+            // Replace with actual navigation logic
+        }
 
+        function goToPage3() {
+            alert('Navigating to Page 3...');
+            // Replace with actual navigation logic
+        }
+
+        function showPopup() {
+            const popup = document.getElementById('updateLogPopup');
+            popup.style.display = 'block';
+        }
+
+        function generateRandomString() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 11; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function copyToClipboard(text) {
+            /* Navigator clipboard API may not work in all environments */
+            navigator.clipboard.writeText(text).then(() => {
+                console.log('Copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        window.onload = function () {
+            const footerText = generateRandomString();
+            document.getElementById('footer').textContent = footerText;
+            copyToClipboard(footerText); // This may not work as expected due to browser security restrictions
+        };
+    </script>
 </body>
 </html>
