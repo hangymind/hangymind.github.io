@@ -1,179 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Interface</title>
-    <style>
-        body {
-            background-color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            text-align: center;
-            color: white;
-        }
-
-        .input-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        input[type="text"] {
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            margin-right: 10px;
-        }
-
-        .button {
-            background-color: black;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .button.ready {
-            width: 120px;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-
-        .sidebar-button {
-            display: block;
-            margin-bottom: 10px;
-            background-color: black;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .popup {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            display: none;
-        }
-
-        .popup-header {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .popup-content {
-            line-height: 1.5;
-        }
-
-        .popup-content .line {
-            border-bottom: 1px solid gray;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hangy.io</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="input-container">
-            <input type="text" id="username" placeholder="Username">
-            <button class="button ready" onclick="login()">ready</button>
-        </div>
-    </div>
+<div id="content">
+  <div id="input-box">
+    <input type="text" id="username" placeholder="请输入用户名" required>
+    <button id="ready-btn" disabled>Ready</button>
+  </div>
+  <div id="generated-string"></div>
+  <button id="popup-btn">更新日志</button>
+  <div id="popup-window" class="popup">
+    <p>更新了更新日志</p>
+  </div>
+</div>
 
-    
-
-    <button class="popup-trigger" onclick="showPopup()">Show Popup</button>
-
-    <div class="popup" id="updateLogPopup">
-        <div class="popup-header">Update Log</div>
-        <div class="popup-content">
-            <div class="line">20240407更新了更新日志</div>
-            <div class="line">削了一些炮塔的op数值</div>
-            <div class="line">感谢了一下试玩游戏的人</div>
-            <!-- Add more lines as needed -->
-        </div>
-    </div>
-
-    <div class="footer" id="footer"></div>
-
-    <script>
-        function login() {
-            const username = document.getElementById('username').value;
-            if (username) {
-                // Simulate the redirect
-                console.log(`Logging in as ${username}...`);
-                window.location.href = 'https://hangymind.github.io/newtest';
-            } else {
-                alert('Please enter a username!');
-            }
-        }
-
-        function goToPage1() {
-            alert('Navigating to Page 1...');
-            // Replace with actual navigation logic
-        }
-
-        function goToPage2() {
-            alert('Navigating to Page 2...');
-            // Replace with actual navigation logic
-        }
-
-        function goToPage3() {
-            alert('Navigating to Page 3...');
-            // Replace with actual navigation logic
-        }
-
-        function showPopup() {
-            const popup = document.getElementById('updateLogPopup');
-            popup.style.display = 'block';
-        }
-
-        function generateRandomString() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < 11; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-
-        function copyToClipboard(text) {
-            /* Navigator clipboard API may not work in all environments */
-            navigator.clipboard.writeText(text).then(() => {
-                console.log('Copied to clipboard');
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
-        }
-
-        window.onload = function () {
-            const footerText = generateRandomString();
-            document.getElementById('footer').textContent = footerText;
-            copyToClipboard(footerText); // This may not work as expected due to browser security restrictions
-        };
-    </script>
+<script src="script.js"></script>
 </body>
 </html>
