@@ -1396,15 +1396,15 @@ class TowerFinally {
 
     static Shotgun_2(world) {
         let b = new Tower(0, 0, world);
-        b.name = "dasb专用快速散弹";
+        b.name = "dasb专用快速霰弹";
         b.r += 11;
         b.rangeR = 260;
-        b.bullySpeed = 2.8;
-        b.bullySpeedAddMax = 0.7;
+        b.bullySpeed = 3.5;
+        b.bullySpeedAddMax = 2.0;
         b.getmMainBullyFunc = BullyFinally.Bully_M;
         b.bullyRotate = Math.PI / 6;
         b.attackFunc = b.shrapnelAttack;
-        b.attackBullyNum = 10;
+        b.attackBullyNum = 16;
         b.clock = 2;
         b.r += 12;
         b.hpInit(10000);
@@ -1412,8 +1412,8 @@ class TowerFinally {
         b.levelDownGetter = TowerFinally.Shotgun_1;
         b.levelUpArr = [];
         b.imgIndex = 44;
-        b.price = 750;
-        b.comment =  `发射的频率更快了，但是子弹的移动速度可能并不是很快，但是dasb快了`;
+        b.price = 800;
+        b.comment =  `发射的频率更快了，但是子弹的移动速度可能很快，但是dasb快了`;
         b.audioSrcString = "sound/子弹音效/散弹子弹.mp3";
         return b;
     }
@@ -1790,22 +1790,22 @@ class TowerFinally {
 
     static Thunder_Far_2(world) {
         let b = new TowerLaser(0, 0, world);
-        b.name = "2级远程雷电塔"
+        b.name = "2级远程雷电hange塔"
         b.r += 13;
         b.rangeR = 320;
         b.laserFreezeMax = 18;
-        b.laserBaseDamage = 140;
-        b.laserMaxDamage = 120;
+        b.laserBaseDamage = 145;
+        b.laserMaxDamage = 200;
         b.laserDamagePreAdd = 8;
-        b.zapCount = 20;  // 最多目标打击数量
+        b.zapCount = 15;  // 最多目标打击数量
         b.damageMultipleRate = 0.85;  // 每多打一个目标，攻击伤害就翻多少倍
-        b.zapLen = 500;  // 闪电连续段最长范围
+        b.zapLen = 510;  // 闪电连续段最长范围
         b.zapInitColor = new MyColor(255, 20, 20, 0.9);
         b.attackFunc = b.zapAttack;
         b.levelUpArr = [];
         b.levelDownGetter = TowerFinally.Thunder_Far_1;
         b.imgIndex = 55;
-        b.price = 600;
+        b.price = 601;
         b.comment =  `能够发射一道闪电，击中敌人后会继续电传导击中附近${b.zapLen}范围内的敌人，进行如上操作${b.zapCount}次数，每次伤害是上一个击中目标的${b.damageMultipleRate}倍数累加，闪电的基础伤害是${b.laserBaseDamage}，最大蓄力伤害是${b.laserMaxDamage}`;
         return b;
     }
@@ -1834,7 +1834,7 @@ class TowerFinally {
 
     static Thunder_Power_2(world) {
         let b = new TowerLaser(0, 0, world);
-        b.name = "2级强力雷电hange塔"
+        b.name = "2级强力雷电塔"
         b.r += 12;
         b.rangeR = 245;
         b.laserFreezeMax = 70;
@@ -1934,7 +1934,7 @@ class TowerFinally {
         b.levelUpArr = [TowerFinally.Laser_Hell_2]
         b.levelDownGetter = TowerFinally.Laser_Blue_1;
         b.imgIndex = 69;
-        b.price = 2000;
+        b.price = 980;
         b.comment = `锁定敌人之后会持续对敌人发射激光，激光会越来越强，随着时间推移伤害会越来越高，无限制增高，血量再厚的敌人也抵挡不过它`
         return b;
     }
@@ -1943,11 +1943,11 @@ class TowerFinally {
         let b = new TowerHell(0, 0, world);
         b.name = "2级地狱激光塔";
         b.r += 15;
-        b.damageRate = 100;
+        b.damageRate = 200;
         b.levelUpArr = [];
         b.levelDownGetter = TowerFinally.Laser_Hell_1;
         b.imgIndex = 69;
-        b.price = 1000;
+        b.price = 990;
         b.comment = `锁定目标后伤害增加的速度变得更快了`
         return b;
     }
@@ -1997,9 +1997,9 @@ class TowerFinally {
         b.name = "3级绿激光";
         b.r += 10;
         b.rangeR = 300;
-        b.laserBaseDamage = 55;  // 直接打中的激光炮的伤害
+        b.laserBaseDamage = 250;  // 直接打中的激光炮的伤害
         b.laserFreezeMax = 2;  // 多少个时间刻度
-        b.laserMaxDamage = 200;  // 最大蓄力强度
+        b.laserMaxDamage = 300;  // 最大蓄力强度
         b.laserDamagePreAdd = 4;  // 蓄力后每个tick增加多少攻击力
         b.laserColor = new MyColor(24, 212, 107, 0.7);
         b.levelUpArr = [];
@@ -2095,7 +2095,7 @@ class TowerFinally {
 
     static Laser_Red_Beta_2(world) {
         let b = new TowerRay(0, 0, world);
-        b.name = "2级Beta小岚专用光"
+        b.name = "2级小岚相信光"
         b.r += 13;
         b.damage = 110;
         b.rangeR = 0;
@@ -2109,7 +2109,7 @@ class TowerFinally {
         b.levelUpArr = [];
         b.imgIndex = 57;
         b.price = 990;
-        b.comment = `全屏扫射，加强了，vivo50削`
+        b.comment = `全屏扫射，vivo50削`
         return b;
     }
 }
