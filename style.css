@@ -1,0 +1,73 @@
+body {
+  background-color: #333;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+#content {
+  text-align: center;
+}
+
+#input-box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#username {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  margin-right: 10px;
+}
+
+#ready-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+#generated-string {
+  margin-bottom: 20px;
+}
+
+#popup-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.popup {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  background-color: #fff;
+  color: #333;
+  border-radius: 10px;
+  padding: 20px;
+  display: none;
+}
+
+.popup p {
+  margin: 0 0 10px 0;
+}
+
+.popup p:not(:last-child) {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
