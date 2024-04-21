@@ -3,51 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>404 Not Found</title>
+<title>Loading Page</title>
 <style>
   body {
     background-color: #333;
-    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
     font-family: Arial, sans-serif;
-    text-align: center;
-    padding-top: 50px;
   }
-
-  .error-message {
-    font-size: 24px;
-  }
-
-  .button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #4CAF50; /* Green */
-    border: none;
+  .loading-text {
     color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    margin: 20px 0;
-    cursor: pointer;
-  }
-
-  .button:hover {
-    background-color: #45a049; /* Green hover */
+    font-size: 100px;
+    font-weight: bold;
   }
 </style>
+<script>
+  window.onload = function() {
+    // 等待2秒后跳转
+    setTimeout(function() {
+      window.location.href = 'https://hangymind.github.io/newtest';
+    }, 5000);
+  };
+</script>
 </head>
 <body>
-
-<div class="error-message">
-  404
-</div>
-
-<button class="button" onclick="redirectToUrl()">Go to hangymind.github.io</button>
-
-<script>
-  function redirectToUrl() {
-    window.location.href = 'http://hangymind.github.io/';
-  }
-</script>
-
+  <div class="loading-text">免责声明:本游戏的所有bug都是gyw干的，开发者不承担任何责任</div>
 </body>
 </html>
