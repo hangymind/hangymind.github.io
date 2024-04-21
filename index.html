@@ -3,22 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hangy.io</title>
-<link rel="stylesheet" href="styles.css">
+<title>Loading Page</title>
+<style>
+  body {
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  .loading-text {
+    color: white;
+    font-size: 120px;
+    font-weight: bold;
+  }
+</style>
+<script>
+  window.onload = function() {
+    // 等待2秒后跳转
+    setTimeout(function() {
+      window.location.href = 'https://hangymind.github.io/newtest';
+    }, 2000);
+  };
+</script>
 </head>
 <body>
-<div id="content">
-  <div id="input-box">
-    <input type="text" id="username" placeholder="请输入用户名" required>
-    <button id="ready-btn" disabled>Ready</button>
-  </div>
-  <div id="generated-string"></div>
-  <button id="popup-btn">更新日志</button>
-  <div id="popup-window" class="popup">
-    <p>更新了更新日志</p>
-  </div>
-</div>
-
-<script src="script.js"></script>
+  <div class="loading-text">loading...</div>
 </body>
 </html>
