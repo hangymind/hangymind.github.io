@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Painter.io</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #canvas {
+            border: 1px solid #ccc;
+            image-rendering: pixelated;
+            background-color: white;
+            /* 使用vw单位，使得画布在不同设备上具有相同的视觉效果 */
+            width: 90vw;
+            height: 90vw;
+            max-width: 900px; /* 设置最大宽度以限制画布大小 */
+            max-height: 900px;
+            
+            /* 新增CSS规则 */
+            display: grid;
+            grid-template-columns: repeat(50, 1fr); /* 假设画布宽度为500px，每列10px */
+            grid-template-rows: repeat(50, 1fr); /* 假设画布高度为500px，每行10px */
+            grid-gap: 1px; /* 边框之间的间隙 */
+        }
+
+        .toolbar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1rem;
+        }
+
+        button {
+            margin: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            button {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h3>Paint Wall</h3>
+    <h6>by iw46</h6>
+    <div class="toolbar">
+        <label for="colorPicker">颜色:</label>
+        <input type="color" id="colorPicker" value="#ff0000">
+    </div>
+    <canvas id="canvas" width="900" height="900"></canvas>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+const socket = io();
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const colorPicker = document.getElementById('colorPicker');
+
+// 默认画笔大小设为最大
+let brushSize = 10;
+
+function drawPixel(x, y, color) {
+    // 绘制背景色
+    ctx.fillStyle = color;
+    ctx.fillRect(x * brushSize, y * brushSize, brushSize, brushSize);
+
+    // 绘制边框
+    ctx.strokeStyle = '#cccccc'; // 灰白色
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x * brushSize, y * brushSize, brushSize, brushSize);
+}
+
+canvas.addEventListener('mousedown', e => {
+    handleMouseEvent(e);
+});
+
+canvas.addEventListener('mousemove', e => {
+    if (e.buttons === 1) {
+        handleMouseEvent(e);
+    }
+});
+
+function handleMouseEvent(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) / brushSize);
+    const y = Math.floor((e.clientY - rect.top) / brushSize);
+    const color = colorPicker.value;
+    drawPixel(x, y, color);
+    socket.emit('pixelUpdate', { x, y, color });
+}
+
+colorPicker.addEventListener('change', () => {
+    // 当颜色改变时，直接更新画笔颜色
+});
+
+socket.on('pixelUpdate', ({ x, y, color }) => {
+    drawPixel(x, y, color);
+});
+
+// 请求初始化数据
+socket.on('init', data => {
+    for (const [key, color] of Object.entries(data)) {
+        const [x, y] = key.split(',').map(Number);
+        drawPixel(x, y, color);
+    }
+});
+    </script>
+</body>
+</html>
