@@ -87,7 +87,7 @@ function createRandomDungeons(lv, difficulty) {
     top:Math.random()*70+15+'%',
     left:Math.random()*70+10+'%',
     eventType: [{
-      name: 'monster',
+      name: 'Dasb', // 修改怪物名字
       type: 'monster',
       eventType: 'battle',
       attribute: {
@@ -101,7 +101,7 @@ function createRandomDungeons(lv, difficulty) {
         ],
       }
     }, {
-      name: 'monster',
+      name: 'Dasb', // 修改怪物名字
       type: 'monster',
       eventType: 'battle',
       attribute: {
@@ -115,7 +115,7 @@ function createRandomDungeons(lv, difficulty) {
         ],
       }
     }, {
-      name: 'monster',
+      name: 'Dasb', // 修改怪物名字
       type: 'monster',
       eventType: 'battle',
       attribute: {
@@ -129,7 +129,7 @@ function createRandomDungeons(lv, difficulty) {
         ],
       }
     }, {
-      name: 'monster',
+      name: 'Dasb', // 修改怪物名字
       type: 'monster',
       eventType: 'battle',
       attribute: {
@@ -143,7 +143,7 @@ function createRandomDungeons(lv, difficulty) {
         ],
       }
     }, {
-      name: 'boss',
+      name: 'JB', // 修改怪物名字，假设这里的 boss 也统一改名为 Dasb
       type: 'boss',
       eventType: 'battle',
       attribute: {

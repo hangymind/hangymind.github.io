@@ -315,7 +315,7 @@ export default {
   border: 1px solid #ccc;
   margin-left: -1px;
   margin-top: -1px;
-  box-shadow: inset 0 0 6px 6px rgba($color: #000000, $alpha: 0.5);
+  box-shadow: inset 0 0 6px 6px rgba($color: #5a5a5a, $alpha: 0.5);
   .title {
     display: flex;
     width: 100%;
@@ -364,7 +364,7 @@ export default {
 }
 .contextmenu {
   margin: 0;
-  background: #000;
+  background: #5a5a5a;
   border: 1px solid #fff;
   z-index: 3000;
   position: absolute;

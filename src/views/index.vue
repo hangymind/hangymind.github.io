@@ -196,7 +196,7 @@
     <div class="sys-info">
       <div class="clear" @click="clearSysInfo">清除信息</div>
       <div id='sysInfo'>
-        <div class="info warning" :class="{warning:v.type=='warning',battle:v.type=='battle',win:v.type=='win',trophy:v.type=='trophy',}" v-for="(v,k) in sysInfo" :key="k">系统<i style="font-size:.12rem" v-if="v.time">({{v.time}})</i>：
+        <div class="info warning" :class="{warning:v.type=='warning',battle:v.type=='battle',win:v.type=='win',trophy:v.type=='trophy',}" v-for="(v,k) in sysInfo" :key="k">团子<i style="font-size:.12rem" v-if="v.time">({{v.time}})</i>：
           <span>{{v.msg}}</span>
           <a v-if="v.equip" v-for="(o,p) in v.equip" :key="p" :style="{color:o.quality.color}" @mouseover="showItemInfo($event,o.itemType,o)" @mouseleave="closeItemInfo"><span v-if="o.quality.name=='独特'">稀有掉落：</span>{{o.type.name}}</a>
         </div>
@@ -749,7 +749,7 @@ export default {
 
       needInfo && this.$store.commit("set_sys_info", {
         msg: `
-              游戏进度已经保存了。
+              保存进度成功!
             `,
         type: 'win'
       });
@@ -796,11 +796,11 @@ export default {
                 name: '破旧',
                 qualityCoefficient: 0.7,
                 probability: '0.25',
-                color: '#a1a1a1',
+                color: '#e9e9cf0',
                 extraEntryNum: 1,
               },
               "type": {
-                "name": "新手项坠",
+                "name": "正常项坠",
                 "des": "一个普通的指环",
                 "iconSrc": "./icons/Ac_3.png",
                 "entry": [{
@@ -1089,7 +1089,7 @@ a {
   cursor: pointer;
 }
 .main {
-  background: #111;
+  background: #565656;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -1209,7 +1209,7 @@ a {
     }
     .uii {
       display: flex;
-      width: calc(100% -0.4rem);
+      width: calc(100% - 0.4rem);
     }
     .gold {
       cursor: pointer;
@@ -1658,7 +1658,7 @@ a {
     cursor: pointer;
     color: #fff;
     background: #000;
-    border: 1px solid #fff;
+    border: 1px solid #2cbcff;
     white-space: nowrap;
   }
 }

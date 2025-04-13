@@ -326,8 +326,8 @@ export const equiAttributeWeapon = {
         }]
       },
       {
-        name: '冰晶之刃',
-        des: '剑锋覆盖着冰晶，碰到的敌人都会被冻住。',
+        name: 'MEG之刃',
+        des: '据说来自后室',
         iconSrc: './icons/W_Sword018.png',
         entry: [{
           'valCoefficient': 1.4,

@@ -9,7 +9,7 @@ import vue from '../../main'
 export async function getAxiosInstance() {
   var baseURL, instance
 
-  baseURL = 'http://couy.xyz:3001/';
+  baseURL = 'https://static.florr.io/ba83d7e244711ae56b4797e04dea8f861efe3522/';
 
   /** 
    * 请求失败后的错误统一处理 

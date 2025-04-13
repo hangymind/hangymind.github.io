@@ -222,7 +222,7 @@ export default {
   color: #f1f1f1;
   width: 3rem;
   height: auto;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(82, 119, 150, 0.8);
   border: #393839;
   border-radius: 0.05rem;
   padding: 0.16rem;

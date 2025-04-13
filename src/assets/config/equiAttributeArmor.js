@@ -83,8 +83,8 @@ export const equiAttributeArmor = {
           'name': '攻击力'
         }]
       }, {
-        name: '肃清者戎衣',
-        des: '相传看到这一袭黑衣的人都死了。',
+        name: '孔乙己的长衫',
+        des: '当代大学生',
         iconSrc: './icons/U_Armor05.png',
         entry: [{
           type: 'HP',
@@ -146,8 +146,8 @@ export const equiAttributeArmor = {
           'name': '生命值'
         }]
       }, {
-        name: '隐武士铠甲',
-        des: '',
+        name: '侠盗胸甲',
+        des: '相传是一个被称为“盗”的人在一个被称为“盗”的地方找到的',
         iconSrc: './icons/U_Armor03.png',
         entry: [{
           'valCoefficient': 1.3,

@@ -23,25 +23,7 @@
           </div>
         </div>
 
-        <div class="footer">
-          <div class="footer-github">
-            <a class="github" target="_blank" @click="navToGithub" title="源码" src="https://github.com/Couy69/vue-idle-game">
-            </a>
-            <span>创作不易，给个star？</span>
-
-          </div>
-          <div class="footer-suggest">
-            <div>
-              <textarea placeholder="发现了bug?抑或是有什么建议？欢迎提出来。" @keydown="eastereEgg1($event)" v-model="suggest" />
-              </div>
-            <div>
-              <input type="text" v-model="name" placeholder="你的昵称？">
-              <div class="button" @click="submitSuggest()">提交</div>
-            </div>
-          </div>
-          
-          
-        </div>
+        
       </div>
     </transition>
 
@@ -63,149 +45,31 @@ export default {
       reKeyCode: [],
       update: [
         {
-          title: '历史版本',
-          vision: [{
-            vision: '测试服',
-            href: 'http://couy.xyz/rpg'
-          }, {
-            vision: '1.2.2',
-            href: 'http://couy.xyz/v1.2.2'
-          }],
-          desc: '- 这里保留了历史版本，你仍然可以导入存档到旧版本游玩,测试服版本不保证可玩性',
+          title: '2025-4-12 (0.3)',
+          adjust: [
+            '- 增加了剧情',
+            '- 修改了一些贴图', 
+          ]
         },
         {
-          title: '2021-1-15 (1.3.3)',
+          title: '2025-4-12 (0.2)',
+          desc: '修改了一些贴图',
           adjust: [
-            '- 略微调高了强化带来的的基础属性加成',
-            '- 商店刷新到独特装备时新增提示',
-            '- 略微调高了一点杀怪金币获取',
-            '- 添加了看上去很牛x的 + 13特效',
+            '- 添加兑换窗口',
+          ]
+        },
+        {
+          title: '2025-4-11 (0.1)',
+          adjust: [
+            '- 重新发布游戏'
+            
           ],
           bug: [
             '- 已修复：特定情况下无尽挑战成功后并没有回复满血',
           ]
-        },
-        {
-          title: '2020-12-11 (1.3.2)',
-          desc: '- 界面显示的问题下个版本会解决，作者现在沉迷赛博朋克2077',
-          adjust: [
-            '-  商店售出装备等级无上限，跟随人物等级',
-            '-  添加了百分比格挡词条',
-          ],
-          bug: [
-            '- 已修复：无尽等级与人物等级可能出现负数(感谢天狐，鸡鸡姬的bug提交)',
-            '- 已修复：无尽勾选重复挑战后导致困难与极难副本也可以重复挑战(感谢konoha，游戏玩家的bug提交)'
-          ]
-        },
-        {
-          title: '2020-12-09 (1.3.1)',
-          desc: '- 提交bug时希望准确描述一下😄',
-          adjust: [
-            '-  无尽难度：对应层数*10的极难副本 -> 对应层数*5的极难副本',
-          ],
-          majorization: [
-            '- 稍微调高了一点金币获取',
-            '- 自动强化需要两倍金币修改为不需要额外金币,与手动强化一致',
-            '- 调整了百分比词条的曲线，会在前期低等级时获得更高的属性',
-            '- 调高了部分带护甲词条的装备属性',
-          ],
-          bug: [
-            '- 已修复：装备强化后格挡值计算低于预期',
-          ]
-        },
-        {
-          title: '2020-12-08 (1.3.0)',
-          desc: '- 遇到了bug或者平衡性方面的问题希望大家可以反馈一下。',
-          adjust: [
-            '-  添加人物转生，转生时会获得转生点数来强化人物基础属性',
-            '-  修改副本刷新规则，现在副本将根据人物等级来刷新，点击菜单栏的刷新按钮来刷新(30S cd)',
-            '-  副本现在为随机生成，并不是以前的固定属性，难度增加，金币获取增加',
-            '-  饰品栏拆分为戒指与项链，添加新的项链装备',
-            '-  无尽挑战现在可以重置当前的挑战等级',
-            '-  添加格挡属性词条',
-            '-  护甲计算公式调整，极限值由100%调整至95%',
-          ],
-          majorization: [
-            '-  加入了新的字体',
-            '-  重铸时会显示当前词条的品质等级，方便确定当前词条是不是最佳属性',
-          ],
-          bug: [
-            '- 修复后台挑战副本失败时自动回血失效的bug',
-            '- 自动出售价格低于预期',
-          ]
-        },
-        {
-          title: '2020-11-30 (1.2.2)',
-          desc: '- 这次基本上都是些小优化。',
-          adjust: [
-            '-  现在支持自动强化了，可以在强化界面设定目标等级自动强化，不过花费金币为正常值的两倍',
-            '-  点击右下角清除存档可以重新开始游戏，请谨慎操作或者备份原有存档',
-            '-  背包中可以设置自动出售的装备稀有度等级了（感谢执着的bug提交）',
-          ],
-          majorization: [
-            '- 调整了一下手机端的显示，从后台来看用手机玩的用户好像也不少',
-          ],
-          bug: [
-            '- 修复手动结束挑战时出现的错误',
-          ]
-        },
-        {
-          title: '2020-11-26 (1.2.1)',
-          desc: '- 现在可以在更新公告下方直接提意见了，或者是反馈bug。',
-          adjust: [
-            '-  商店支持金币刷新了',
-            '-  无尽挑战添加自动挑战',
-          ],
-          majorization: [
-            '- 现在强化后会保存游戏',
-            '- 继续加强副本',
-            '- 装备数值调整',
-          ],
-        },
-        {
-          title: '2020-11-25 (1.2.0)',
-          desc: '- 时隔半个多月的更新,这次修改的内容比较多',
-          adjust: [
-            '-  添加导入导出存档功能：背包装备过多可能导致存档数据比较长，所以建议导出前处理一下背包装备 ',
-            '-  添加自动出售：背包栏可以开启自动出售，自动出售会卖出低品质的装备（低于神器）',
-            '-  添加装备强化与词条重铸：需要金币',
-            '-  添加独特级别的防具与饰品',
-          ],
-          majorization: [
-            '- 加强副本强度（一级副本基本没有加强，100级强度大概增加了五倍，这个强度变化是线性的）',
-            '- 加了一些动画',
-            '- 装备数值调整',
-            '- 独特装备掉率修改为4%,商店有较小概率刷新出独特装备',
-            '- 售出装备获得金币调高了三倍，增加了高级副本金币获取'
-          ],
-          bug: [
-            '- 修复自动出售可能将背包其余装备卖出的bug',
-          ]
-        }, {
-          title: '2020-11-09 (1.1.1)',
-          adjust: [
-            '-  适配移动端',
-          ],
-        },
-        {
-          title: '2020-11-06 (1.1.0)',
-          desc: '',
-          adjust: [
-            '- （功能）添加装备锁定功能',
-            '- （功能）装备新增百分比词条',
-            '- （功能）添加 60~100 级副本',
-            '- （功能）完成副本时可能掉落独特级别的装备（通关后 2.5%掉落率，无尽挑战不会掉落）',
-            '- （功能）通关后开启无尽挑战'
-          ],
-          majorization: [
-            '- （优化）调整了商店价格（前期更低，后期更高），现在商店等级最高为 110 级',
-            '- （优化）调整并添加了一些新装备',
-            '- （优化）上调了 90 与 100 级副本的难度'
-          ],
-          bug: [
-            '- （bug）修复了手动结束副本挑战可能导致副本加速的 bug'
-          ]
-        },]
+        }
+        
+        ]
     };
   },
   mounted() {
@@ -425,16 +289,9 @@ export default {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  /* 移除 github 图标相关样式 */
   .github {
-    margin-bottom: 0.1rem;
-    margin-left: 0.1rem;
-    background: #fafafa;
-    display: block;
-    width: 0.32rem;
-    height: 0.32rem;
-    border-radius: 50%;
-    background-image: url(../../assets/icons/github.svg);
-    background-size: cover;
+    display: none;
   }
   .footer-suggest {
     flex: 1;
@@ -443,28 +300,6 @@ export default {
       width: 100%;
       display: flex;
       margin: 0.1rem;
-      justify-content: space-between;
-    }
-    textarea {
-      width: 90%;
-      height: 1rem;
-      max-width: 4rem;
-      max-height: 1.5rem;
-    }
-  }
-  .footer-github {
-    width: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    & > div {
-      display: flex;
-      margin: 0.1rem;
-      justify-content: space-between;
-    }
-    span {
-      text-align: center;
     }
   }
 }

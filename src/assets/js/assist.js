@@ -69,5 +69,4 @@ export const assist = {
       if (exceptMe) res.splice(index, 1);
       return res;
     }
-  }
-};
+  }};
