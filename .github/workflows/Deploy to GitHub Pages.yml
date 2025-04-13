@@ -1,17 +1,16 @@
-name: gh
+name: Deploy to GitHub Pages
 
 on:
-  # 当推送代码到 main 分支时触发
+  # 当代码推送到 main 分支时触发
   push:
     branches:
       - main
-  # 也可手动触发工作流
+  # 也支持手动触发
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,10 +18,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build project
         run: npm run build
@@ -32,4 +32,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          cname: hangymind.github.io/FIGHTER.IO
