@@ -1,7 +1,9 @@
 const CompressionPlugin = require("compression-webpack-plugin")
 module.exports = {
   // 选项...
-  publicPath: '',
+  outputDir:"dist",
+  lintOnSave: true,
+  publicPath: '/',
   productionSourceMap: false,
   configureWebpack: config => {
     if (process.env.NODE_ENV === 'production') {
