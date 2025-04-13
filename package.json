@@ -1,8 +1,8 @@
 {
-  "name": "COUY-RPG-NEW",
-  "version": "0.1.0",
+  "name": "FIGHTER.IO",
+  "version": "0.3.0",
   "private": true,
-  "homepage":https://hangymind.github.io/fighter.io-packages
+  "homepage":"https://hangymind.github.io/FIGHTER.IO",
   "scripts": {
     "serve": "cross-env NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve",
     "build": "vue-cli-service build"
