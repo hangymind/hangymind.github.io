@@ -1,7 +1,7 @@
 <template>
   <div class="extras">
     <!-- 修复 a 标签的使用，将 src 替换为 href -->
-    <a class="github" target="_blank" @click="navToGithub" title="源码" href="https://github.com/hangymind/hangymind.github.io">GitHub 源码</a>
+    <a class="github" target="_blank" @click="navToGithub" title="源码" href="https://github.com/Couy69/vue-idle-game">GitHub 源码</a>
     <div class="update-info" @click="drawerOpen" type="primary">
       <img src="../../assets/icons/menu/extras.png" alt="">
       <span>更新日志</span>
