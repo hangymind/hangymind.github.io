@@ -1,0 +1,896 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Server Stats</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="CRCMenu.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f8fa;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 191, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 191, 255, 0.05) 0%, transparent 20%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: #006994;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: #00BFFF;
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 10px auto 0;
+            line-height: 1.6;
+        }
+        
+        .server-type {
+            display: inline-block;
+            background: #e6f7ff;
+            color: #006994;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            border: 1px solid #b3e5fc;
+        }
+        
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #e0f7fa;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0f7fa;
+        }
+        
+        .card-header i {
+            font-size: 2rem;
+            margin-right: 15px;
+            color: #00BFFF;
+            background: #e6f7ff;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid #b3e5fc;
+        }
+        
+        .card-header h2 {
+            font-size: 1.6rem;
+            color: #006994;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            padding-left: 5px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid #b3e5fc;
+            background: #f5fbff;
+            color: #333;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #00BFFF;
+            box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.2);
+            background: #fff;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 30px; /* 操场形按钮 */
+            background: #00BFFF;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+        }
+        
+        button:hover {
+            background: #0099cc;
+            box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(2px);
+        }
+        
+        .status-container {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 18px;
+            background: #f5fbff;
+            display: none;
+            border: 1px solid #e0f7fa;
+        }
+        
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 18px;
+            border-radius: 30px; /* 操场形 */
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .online {
+            background: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+        
+        .offline {
+            background: rgba(231, 76, 60, 0.15);
+            color: #c0392b;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+        
+        .info-item {
+            background: #fff;
+            padding: 18px;
+            border-radius: 15px;
+            border: 1px solid #e0f7fa;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+        }
+        
+        .info-label {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-label i {
+            margin-right: 8px;
+            color: #00BFFF;
+        }
+        
+        .info-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            word-break: break-all;
+            color: #006994;
+        }
+        
+        .players-container {
+            margin-top: 25px;
+        }
+        
+        .players-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        
+        .players-header i {
+            margin-right: 12px;
+            color: #00BFFF;
+            font-size: 1.4rem;
+        }
+        
+        .player-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .player {
+            background: rgba(0, 191, 255, 0.1);
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 1rem;
+            border: 1px solid rgba(0, 191, 255, 0.2);
+            color: #006994;
+        }
+        
+        .motd {
+            background: rgba(0, 191, 255, 0.05);
+            padding: 18px;
+            border-radius: 15px;
+            margin-top: 25px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            border: 1px solid #e0f7fa;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+        
+        .loading-spinner {
+            border: 5px solid rgba(0, 191, 255, 0.1);
+            border-top: 5px solid #00BFFF;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .error-message {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .quick-query {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0f7fa;
+        }
+        
+        .quick-query h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #006994;
+            font-size: 1.8rem;
+        }
+        
+        .server-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .server-btn {
+            background: #e6f7ff;
+            border: 1px solid #b3e5fc;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #006994;
+            font-weight: 600;
+        }
+        
+        .server-btn:hover {
+            background: #00BFFF;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
+            border-color: #00BFFF;
+        }
+        
+        .server-btn i {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #00BFFF;
+        }
+        
+        .server-btn:hover i {
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .card-header i {
+                width: 50px;
+                height: 50px;
+                font-size: 1.6rem;
+            }
+            
+            .server-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-server"></i> Minecraft服务器状态查询</h1>
+            <p class="subtitle">最为简单的检查服务器办法</p>
+            <div class="server-type">感谢 api.mcsrvstat.us 提供的数据支持</div>
+        </header>
+        
+        <div class="card-container">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fab fa-java"></i>
+                    <h2>Java版服务器查询</h2>
+                </div>
+                <div class="input-group">
+                    <label for="java-ip"><i class="fas fa-globe"></i> 服务器地址 (IP或域名)</label>
+                    <input type="text" id="java-ip" placeholder="例如: mc.hypixel.net">
+                </div>
+                <button id="java-btn">
+                    <i class="fas fa-search"></i> 查询服务器状态
+                </button>
+                
+                <div class="error-message" id="java-error"></div>
+                
+                <div class="loading" id="java-loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在查询服务器状态...</p>
+                </div>
+                
+                <div class="status-container" id="java-result">
+                    <div class="status-header">
+                        <h3>服务器状态信息</h3>
+                        <div class="status-indicator online">在线</div>
+                    </div>
+                    
+                    <div class="server-info">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-network-wired"></i> 服务器地址</div>
+                                <div class="info-value" id="java-address">mc.example.com</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-plug"></i> 服务器端口</div>
+                                <div class="info-value" id="java-port">25565</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-code-branch"></i> 游戏版本</div>
+                                <div class="info-value" id="java-version">1.20.1</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-exchange-alt"></i> 协议版本</div>
+                                <div class="info-value" id="java-protocol">763</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-cogs"></i> 服务器软件</div>
+                            <div class="info-value" id="java-software">Paper 1.20.1</div>
+                        </div>
+                    </div>
+                    
+                    <div class="players-container">
+                        <div class="players-header">
+                            <i class="fas fa-users"></i>
+                            <h3>在线玩家 (<span id="java-players-online">24</span>/<span id="java-players-max">50</span>)</h3>
+                        </div>
+                        <div class="player-list" id="java-player-list">
+                            <div class="player">Player1</div>
+                            <div class="player">Player2</div>
+                            <div class="player">Steve</div>
+                            <div class="player">Alex</div>
+                            <div class="player">Miner42</div>
+                        </div>
+                    </div>
+                    
+                    <div class="motd-container">
+                        <div class="players-header">
+                            <i class="fas fa-scroll"></i>
+                            <h3>服务器描述 (MOTD)</h3>
+                        </div>
+                        <div class="motd" id="java-motd">
+                            wssb                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h2>基岩版服务器查询</h2>
+                </div>
+                <div class="input-group">
+                    <label for="bedrock-ip"><i class="fas fa-globe"></i> 服务器地址 (IP或域名)</label>
+                    <input type="text" id="bedrock-ip" placeholder="例如: play.nethergames.org">
+                </div>
+                <button id="bedrock-btn">
+                    <i class="fas fa-search"></i> 查询服务器状态
+                </button>
+                
+                <div class="error-message" id="bedrock-error"></div>
+                
+                <div class="loading" id="bedrock-loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在查询服务器状态...</p>
+                </div>
+                
+                <div class="status-container" id="bedrock-result">
+                    <div class="status-header">
+                        <h3>服务器状态信息</h3>
+                        <div class="status-indicator online">在线</div>
+                    </div>
+                    
+                    <div class="server-info">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-network-wired"></i> 服务器地址</div>
+                                <div class="info-value" id="bedrock-address">bedrock.example.com</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-plug"></i> 服务器端口</div>
+                                <div class="info-value" id="bedrock-port">19132</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-code-branch"></i> 游戏版本</div>
+                                <div class="info-value" id="bedrock-version">1.20.15</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-exchange-alt"></i> 协议版本</div>
+                                <div class="info-value" id="bedrock-protocol">649</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label"><i class="fas fa-cogs"></i> 服务器软件</div>
+                            <div class="info-value" id="bedrock-software">Bedrock Dedicated Server</div>
+                        </div>
+                    </div>
+                    
+                    <div class="players-container">
+                        <div class="players-header">
+                            <i class="fas fa-users"></i>
+                            <h3>在线玩家 (<span id="bedrock-players-online">8</span>/<span id="bedrock-players-max">20</span>)</h3>
+                        </div>
+                        <div class="player-list" id="bedrock-player-list">
+                            <div class="player">BedrockPlayer1</div>
+                            <div class="player">MobileGamer</div>
+                            <div class="player">ConsoleUser</div>
+                        </div>
+                    </div>
+                    
+                    <div class="motd-container">
+                        <div class="players-header">
+                            <i class="fas fa-scroll"></i>
+                            <h3>服务器描述 (MOTD)</h3>
+                        </div>
+                        <div class="motd" id="bedrock-motd">
+                            §b基岩版服务器欢迎你!
+                            §e跨平台游戏体验
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-query">
+            <h2><i class="fas fa-bolt"></i> 快捷查询</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">点击下方服务器直接查询状态</p>
+            
+            <div class="server-grid">
+                <div class="server-btn" data-type="java" data-ip="mc.hypixel.net">
+                    <i class="fab fa-java"></i>
+                    Hypixel
+                </div>
+			<div class="server-btn" data-type="java" data-ip="frp-net.com:21706">
+                    <i class="fab fa-java"></i>
+                    小岚の服务器
+                </div>
+                            </div>
+        </div>
+        
+        <footer>
+            <p>iw46Team &copy; 2025 | 数据来源: api.mcsrvstat.us</p>
+        </footer>
+    </div>
+    //引用右键菜单
+    <div id="custom-menu">
+        <div class="menu-header" id="general-menu-header">常规操作</div>
+        <div class="menu-item" id="back-item" onclick="backAction()">
+            <i class="fa fa-heart"></i>
+            <span>芙宁娜</span>
+        </div>
+        <div class="menu-item" id="refresh-item" onclick="refreshAction()">
+            <i class="fa fa-refresh"></i>
+            <span>刷新</span>
+        </div>
+
+        <div class="menu-divider" id="edit-divider"></div>
+        <div class="menu-header" id="edit-menu-header">编辑操作</div>
+        <div class="menu-item" id="copy-item" onclick="copyAction()">
+            <i class="fa fa-copy"></i>
+            <span>复制</span>
+        </div>
+        <div class="menu-item" id="paste-item" onclick="pasteAction()">
+            <i class="fa fa-paste"></i>
+            <span>粘贴</span>
+        </div>
+
+        <div class="menu-divider" id="link-divider"></div>
+        <div class="menu-header" id="link-menu-header">链接操作</div>
+        <div class="menu-item" id="open-in-new-tab-item" onclick="openInNewTabAction()">
+            <i class="fa fa-external-link"></i>
+            <span>在新标签页打开</span>
+        </div>
+        <div class="menu-item" id="copy-link-item" onclick="copyLinkAction()">
+            <i class="fa fa-link"></i>
+            <span>复制链接地址</span>
+        </div>
+
+        <div class="menu-divider" id="image-divider"></div>
+        <div class="menu-header" id="image-menu-header">图片操作</div>
+        <div class="menu-item" id="open-image-in-new-tab-item" onclick="openImageInNewTabAction()">
+            <i class="fa fa-external-link"></i>
+            <span>在新标签页打开</span>
+        </div>
+        <div class="menu-item" id="copy-image-url-item" onclick="copyImageUrlAction()">
+            <i class="fa fa-link"></i>
+            <span>复制图片地址</span>
+        </div>
+
+        <div class="menu-divider" id="other-divider"></div>
+        <div class="menu-header" id="other-menu-header">其他操作</div>
+        <div class="menu-item" id="back-to-home-item" onclick="backToHomeAction()">
+            <i class="fa fa-home"></i>
+            <span>返回主页</span>
+        </div>
+    </div>
+    <script src="CRCMenu.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const javaBtn = document.getElementById('java-btn');
+            const bedrockBtn = document.getElementById('bedrock-btn');
+            const javaLoading = document.getElementById('java-loading');
+            const bedrockLoading = document.getElementById('bedrock-loading');
+            const javaResult = document.getElementById('java-result');
+            const bedrockResult = document.getElementById('bedrock-result');
+            const javaError = document.getElementById('java-error');
+            const bedrockError = document.getElementById('bedrock-error');
+            
+            // 添加快捷查询按钮事件
+            const serverBtns = document.querySelectorAll('.server-btn');
+            serverBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    const ip = this.dataset.ip;
+                    
+                    if (type === 'java') {
+                        document.getElementById('java-ip').value = ip;
+                        javaBtn.click();
+                    } else {
+                        document.getElementById('bedrock-ip').value = ip;
+                        bedrockBtn.click();
+                    }
+                });
+            });
+            
+            // Java版查询
+            javaBtn.addEventListener('click', function() {
+                const ip = document.getElementById('java-ip').value.trim();
+                if (!ip) {
+                    showError(javaError, '请输入服务器地址');
+                    return;
+                }
+                hideError(javaError);
+                javaResult.style.display = 'none';
+                javaLoading.style.display = 'block';
+                
+                // API调用
+                fetch(`https://api.mcsrvstat.us/3/${encodeURIComponent(ip)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('服务器响应错误');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        updateJavaResult(data);
+                        javaLoading.style.display = 'none';
+                        javaResult.style.display = 'block';
+                    })
+                    .catch(error => {
+                        javaLoading.style.display = 'none';
+                        showError(javaError, `查询失败: ${error.message || '未知错误'}`);
+                    });
+            });
+            
+            // 基岩版查询
+            bedrockBtn.addEventListener('click', function() {
+                const ip = document.getElementById('bedrock-ip').value.trim();
+                if (!ip) {
+                    showError(bedrockError, '请输入服务器地址');
+                    return;
+                }
+                hideError(bedrockError);
+                bedrockResult.style.display = 'none';
+                bedrockLoading.style.display = 'block';
+
+                fetch(`https://api.mcsrvstat.us/bedrock/3/${encodeURIComponent(ip)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('服务器响应错误');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        updateBedrockResult(data);
+                        bedrockLoading.style.display = 'none';
+                        bedrockResult.style.display = 'block';
+                    })
+                    .catch(error => {
+                        bedrockLoading.style.display = 'none';
+                        showError(bedrockError, `查询失败: ${error.message || '未知错误'}`);
+                    });
+            });
+            
+            // 更新Java版结果
+            function updateJavaResult(data) {
+                // 更新状态指示器
+                const statusIndicator = javaResult.querySelector('.status-indicator');
+                if (data.online) {
+                    statusIndicator.className = 'status-indicator online';
+                    statusIndicator.textContent = '在线';
+                } else {
+                    statusIndicator.className = 'status-indicator offline';
+                    statusIndicator.textContent = '离线';
+                }
+                
+                // 更新基本信息
+                document.getElementById('java-address').textContent = data.hostname || data.ip || '未知';
+                document.getElementById('java-port').textContent = data.port || '25565';
+                document.getElementById('java-version').textContent = data.version || '未知';
+                document.getElementById('java-protocol').textContent = data.protocol || '未知';
+                document.getElementById('java-software').textContent = data.software || '未知';
+                
+                // 更新玩家信息
+                if (data.players) {
+                    document.getElementById('java-players-online').textContent = data.players.online || 0;
+                    document.getElementById('java-players-max').textContent = data.players.max || 0;
+                    
+                    // 更新玩家列表
+                    const playerList = document.getElementById('java-player-list');
+                    playerList.innerHTML = '';
+                    
+                    if (data.players.list && data.players.list.length > 0) {
+                        data.players.list.slice(0, 15).forEach(player => {
+                            const playerEl = document.createElement('div');
+                            playerEl.className = 'player';
+                            playerEl.textContent = player;
+                            playerList.appendChild(playerEl);
+                        });
+                        
+                        if (data.players.list.length > 15) {
+                            const moreEl = document.createElement('div');
+                            moreEl.className = 'player';
+                            moreEl.textContent = `+${data.players.list.length - 15} 更多`;
+                            playerList.appendChild(moreEl);
+                        }
+                    } else {
+                        playerList.innerHTML = '<div class="player">没有在线玩家</div>';
+                    }
+                } else {
+                    document.getElementById('java-players-online').textContent = '0';
+                    document.getElementById('java-players-max').textContent = '0';
+                    document.getElementById('java-player-list').innerHTML = '<div class="player">没有在线玩家</div>';
+                }
+                
+                // 更新MOTD
+                if (data.motd && data.motd.clean) {
+                    document.getElementById('java-motd').textContent = data.motd.clean.join('\n');
+                } else {
+                    document.getElementById('java-motd').textContent = '无服务器描述';
+                }
+            }
+            
+            // 更新基岩版结果
+            function updateBedrockResult(data) {
+                // 更新状态指示器
+                const statusIndicator = bedrockResult.querySelector('.status-indicator');
+                if (data.online) {
+                    statusIndicator.className = 'status-indicator online';
+                    statusIndicator.textContent = '在线';
+                } else {
+                    statusIndicator.className = 'status-indicator offline';
+                    statusIndicator.textContent = '离线';
+                }
+                
+                // 更新基本信息
+                document.getElementById('bedrock-address').textContent = data.hostname || data.ip || '未知';
+                document.getElementById('bedrock-port').textContent = data.port || '19132';
+                document.getElementById('bedrock-version').textContent = data.version || '未知';
+                document.getElementById('bedrock-protocol').textContent = data.protocol || '未知';
+                document.getElementById('bedrock-software').textContent = data.software || '未知';
+                
+                // 更新玩家信息
+                if (data.players) {
+                    document.getElementById('bedrock-players-online').textContent = data.players.online || 0;
+                    document.getElementById('bedrock-players-max').textContent = data.players.max || 0;
+                    
+                    // 更新玩家列表
+                    const playerList = document.getElementById('bedrock-player-list');
+                    playerList.innerHTML = '';
+                    
+                    if (data.players.list && data.players.list.length > 0) {
+                        data.players.list.slice(0, 15).forEach(player => {
+                            const playerEl = document.createElement('div');
+                            playerEl.className = 'player';
+                            playerEl.textContent = player;
+                            playerList.appendChild(playerEl);
+                        });
+                        
+                        if (data.players.list.length > 15) {
+                            const moreEl = document.createElement('div');
+                            moreEl.className = 'player';
+                            moreEl.textContent = `+${data.players.list.length - 15} 更多`;
+                            playerList.appendChild(moreEl);
+                        }
+                    } else {
+                        playerList.innerHTML = '<div class="player">没有在线玩家</div>';
+                    }
+                } else {
+                    document.getElementById('bedrock-players-online').textContent = '0';
+                    document.getElementById('bedrock-players-max').textContent = '0';
+                    document.getElementById('bedrock-player-list').innerHTML = '<div class="player">没有在线玩家</div>';
+                }
+                
+                // 更新MOTD
+                if (data.motd && data.motd.clean) {
+                    document.getElementById('bedrock-motd').textContent = data.motd.clean.join('\n');
+                } else {
+                    document.getElementById('bedrock-motd').textContent = '无服务器描述';
+                }
+            }
+            
+            // 显示错误信息
+            function showError(element, message) {
+                element.textContent = message;
+                element.style.display = 'block';
+            }
+            
+            // 隐藏错误信息
+            function hideError(element) {
+                element.style.display = 'none';
+            }
+            
+            // 添加示例服务器地址
+            document.getElementById('java-ip').value = 'mc.hypixel.net';
+            document.getElementById('bedrock-ip').value = 'play.nethergames.org';
+        });
+    </script>
+</body>
+</html>

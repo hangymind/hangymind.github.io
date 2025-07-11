@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ily</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="CRCMenu.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0a2a4a, #0c3b5e);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 20, 40, 0.4),
+                        0 0 0 2px rgba(100, 200, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            z-index: 10;
+            border: 1px solid rgba(100, 200, 255, 0.2);
+        }
+
+        .water-mark {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            font-size: 180px;
+            color: rgba(100, 200, 255, 0.03);
+            transform: rotate(15deg);
+            z-index: -1;
+        }
+
+        .header {
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #aaddff;
+            margin-bottom: 35px;
+            text-shadow: 0 0 15px rgba(100, 200, 255, 0.4);
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(170, 221, 255, 0.6), transparent);
+        }
+
+        .character {
+            position: relative;
+            margin: 0 auto 30px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(170, 221, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(100, 200, 255, 0.3),
+                        inset 0 0 30px rgba(100, 200, 255, 0.1);
+            border: 2px solid rgba(170, 221, 255, 0.4);
+            animation: float 6s infinite ease-in-out;
+        }
+
+        .character img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .message {
+            background: rgba(10, 40, 70, 0.4);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            border: 1px solid rgba(100, 200, 255, 0.2);
+            box-shadow: inset 0 0 15px rgba(100, 200, 255, 0.1);
+        }
+
+        .message p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #e6f7ff;
+        }
+
+        .quote {
+            position: absolute;
+            font-size: 5rem;
+            color: rgba(170, 221, 255, 0.1);
+            font-family: Georgia, serif;
+        }
+
+        .quote-start {
+            top: 5px;
+            left: 20px;
+        }
+
+        .quote-end {
+            bottom: -35px;
+            right: 20px;
+        }
+
+        .choice-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 35px;
+            position: relative;
+        }
+
+        .btn {
+            padding: 16px 50px;
+            font-size: 1.4rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-accept {
+            background: rgba(100, 200, 255, 0.9);
+            color: #0a2a4a;
+            z-index: 10;
+        }
+
+        .btn-accept:hover {
+            background: rgba(120, 220, 255, 1);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(100, 200, 255, 0.4);
+        }
+
+        .btn-reject {
+            background: transparent;
+            color: #aaddff;
+            border: 2px solid rgba(100, 200, 255, 0.5);
+            z-index: 10;
+        }
+
+        .btn-reject:hover {
+            background: rgba(100, 200, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(100, 200, 255, 0.2);
+        }
+
+        .reject-container {
+            position: relative;
+        }
+
+        .reject-message {
+            position: absolute;
+            top: -65px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 40, 70, 0.9);
+            color: #aaddff;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .reject-message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0 10px;
+            border-style: solid;
+            border-color: rgba(10, 40, 70, 0.9) transparent transparent transparent;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 1.1rem;
+            color: rgba(170, 221, 255, 0.6);
+            font-style: italic;
+        }
+
+        .water-drops {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .water-drop {
+            position: absolute;
+            width: 4px;
+            height: 20px;
+            background: rgba(100, 200, 255, 0.3);
+            border-radius: 50%;
+            animation: drop-fall 4s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes drop-fall {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(100, 200, 255, 0.05);
+            animation: float-bubble 15s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        @keyframes float-bubble {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(20px, -30px) scale(1.05); }
+            50% { transform: translate(-15px, 15px) scale(0.95); }
+            75% { transform: translate(10px, -20px) scale(1.02); }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .message p { font-size: 1.15rem; }
+            .btn { padding: 14px 40px; font-size: 1.2rem; }
+            .choice-container { flex-direction: column; align-items: center; gap: 25px; }
+            .reject-message { top: -60px; }
+            .character { width: 180px; height: 180px; }
+            .container { padding: 30px 20px; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.9rem; }
+            .character { width: 160px; height: 160px; }
+            .message p { font-size: 1rem; }
+            .btn { padding: 12px 35px; font-size: 1.1rem; }
+            .quote { font-size: 4rem; }
+            .quote-start { left: 10px; }
+            .quote-end { right: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="water-drops" id="waterDrops"></div>
+    <div class="bubble" style="width: 120px; height: 120px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+    <div class="bubble" style="width: 80px; height: 80px; top: 70%; left: 80%; animation-delay: -3s;"></div>
+    <div class="bubble" style="width: 60px; height: 60px; top: 30%; left: 85%; animation-delay: -5s;"></div>
+    <div class="bubble" style="width: 100px; height: 100px; top: 80%; left: 15%; animation-delay: -7s;"></div>
+    
+    <div class="container">
+        <div class="water-mark">❦</div>
+        
+        <div class="header">
+            <h1>芙宁娜:我喜欢你</h1>
+            <div class="character">
+                <img src="https://c-ssl.duitang.com/uploads/blog/202307/14/q4S7aGvbUxNY58e.jpg" alt="芙宁娜">
+            </div>
+        </div>
+
+        <div class="message">
+            <div class="quote quote-start">“</div>
+            <p>主播不善言辞，让ai写点</p>
+            <p>这不是请求，而是宣告——你将成为我最特别的观众、伙伴以及永恒的头号粉丝！</p>
+            <p>作为水之国度最璀璨的明星，我以水神的名义赐予你这无上荣光。</p>
+            <p>现在，请做出你唯一的选择——接受这纯净如水的爱意！</p>
+            <div class="quote quote-end">”</div>
+        </div>
+
+        <div class="choice-container">
+            <button class="btn btn-accept" id="acceptBtn">
+                <i class="fas fa-heart"></i> 接受告白
+            </button>
+            <div class="reject-container">
+                <button class="btn btn-reject" id="rejectBtn">
+                    <i class="fas fa-times"></i> 拒绝告白
+                </button>
+                <div class="reject-message" id="rejectMessage">哼！这个选项只是装饰品！</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>温馨提示：芙宁娜大人的爱如流水般无法阻挡，请明智选择</p>
+        </div>
+    </div>
+    //右键
+     <div id="custom-menu">
+        <div class="menu-header" id="general-menu-header">常规操作</div>
+        <div class="menu-item" id="back-item" onclick="backAction()">
+            <i class="fa fa-arrow-left"></i>
+            <span>返回</span>
+        </div>
+        <div class="menu-item" id="refresh-item" onclick="refreshAction()">
+            <i class="fa fa-refresh"></i>
+            <span>刷新</span>
+        </div>
+
+        <div class="menu-divider" id="edit-divider"></div>
+        <div class="menu-header" id="edit-menu-header">编辑操作</div>
+        <div class="menu-item" id="copy-item" onclick="copyAction()">
+            <i class="fa fa-copy"></i>
+            <span>复制</span>
+        </div>
+        <div class="menu-item" id="paste-item" onclick="pasteAction()">
+            <i class="fa fa-paste"></i>
+            <span>粘贴</span>
+        </div>
+
+        <div class="menu-divider" id="link-divider"></div>
+        <div class="menu-header" id="link-menu-header">链接操作</div>
+        <div class="menu-item" id="open-in-new-tab-item" onclick="openInNewTabAction()">
+            <i class="fa fa-external-link"></i>
+            <span>在新标签页打开</span>
+        </div>
+        <div class="menu-item" id="copy-link-item" onclick="copyLinkAction()">
+            <i class="fa fa-link"></i>
+            <span>复制链接地址</span>
+        </div>
+
+        <div class="menu-divider" id="image-divider"></div>
+        <div class="menu-header" id="image-menu-header">图片操作</div>
+        <div class="menu-item" id="open-image-in-new-tab-item" onclick="openImageInNewTabAction()">
+            <i class="fa fa-external-link"></i>
+            <span>在新标签页打开</span>
+        </div>
+        <div class="menu-item" id="copy-image-url-item" onclick="copyImageUrlAction()">
+            <i class="fa fa-link"></i>
+            <span>复制图片地址</span>
+        </div>
+
+        <div class="menu-divider" id="other-divider"></div>
+        <div class="menu-header" id="other-menu-header">其他操作</div>
+        <div class="menu-item" id="back-to-home-item" onclick="backToHomeAction()">
+            <i class="fa fa-home"></i>
+            <span>返回主页</span>
+        </div>
+    </div>
+    <script src="menufnn.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const acceptBtn = document.getElementById('acceptBtn');
+            const rejectBtn = document.getElementById('rejectBtn');
+            const rejectMessage = document.getElementById('rejectMessage');
+            const waterDrops = document.getElementById('waterDrops');
+            function createWaterDrops() {
+                for (let i = 0; i < 25; i++) {
+                    const drop = document.createElement('div');
+                    drop.className = 'water-drop';
+                    drop.style.left = Math.random() * 100 + 'vw';
+                    drop.style.animationDelay = Math.random() * 5 + 's';
+                    drop.style.animationDuration = (Math.random() * 4 + 3) + 's';
+                    waterDrops.appendChild(drop);
+                }
+            }
+            
+            createWaterDrops();
+
+            rejectBtn.addEventListener('mouseover', function() {
+                rejectMessage.style.opacity = '1';
+
+                const maxX = window.innerWidth - rejectBtn.offsetWidth - 20;
+                const maxY = window.innerHeight - rejectBtn.offsetHeight - 20;
+                
+                const randomX = Math.floor(Math.random() * maxX);
+                const randomY = Math.floor(Math.random() * maxY);
+                
+                rejectBtn.style.position = 'fixed';
+                rejectBtn.style.left = randomX + 'px';
+                rejectBtn.style.top = randomY + 'px';
+            });
+            
+            rejectBtn.addEventListener('mouseout', function() {
+                setTimeout(() => {
+                    rejectMessage.style.opacity = '0';
+                }, 1000);
+            });
+            
+            rejectBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                rejectMessage.textContent = getRandomRejectMessage();
+                rejectMessage.style.opacity = '1';
+                const maxX = window.innerWidth - rejectBtn.offsetWidth - 20;
+                const maxY = window.innerHeight - rejectBtn.offsetHeight - 20;
+                
+                const randomX = Math.floor(Math.random() * maxX);
+                const randomY = Math.floor(Math.random() * maxY);
+                
+                rejectBtn.style.transition = 'left 0.5s, top 0.5s';
+                rejectBtn.style.left = randomX + 'px';
+                rejectBtn.style.top = randomY + 'px';
+                
+                setTimeout(() => {
+                    rejectBtn.style.transition = '';
+                }, 500);
+            });
+            acceptBtn.addEventListener('click', function() {
+                const messageDiv = document.querySelector('.message');
+                messageDiv.innerHTML = `
+                    <div class="quote quote-start">“</div>
+                    <p>明智的选择！旅行者~</p>
+                    <p>从此刻起，你就是芙宁娜大人最特别的观众了！</p>
+                    <p>准备好迎接充满戏剧性、惊喜与纯水之爱的每一天了吗？</p>
+                    <p>（反悔？那是不可能的！）</p>
+                    <div class="quote quote-end">”</div>
+                `;
+                
+                // 改变按钮样式
+                acceptBtn.innerHTML = '<i class="fas fa-check-circle"></i> 已接受永恒的爱';
+                acceptBtn.style.background = 'rgba(170, 221, 255, 0.95)';
+                acceptBtn.style.cursor = 'default';
+                acceptBtn.disabled = true;
+                
+                rejectBtn.style.display = 'none';
+                rejectMessage.style.display = 'none';
+                const character = document.querySelector('.character');
+                character.style.boxShadow = '0 0 40px rgba(170, 221, 255, 0.6), inset 0 0 40px rgba(170, 221, 255, 0.3)';
+                character.style.animation = 'float 3s infinite ease-in-out';
+                for(let i = 0; i < 50; i++) {
+                    createWaterDrop();
+                }
+            }); 
+            function getRandomRejectMessage() {
+                const messages = [
+                    "哼！这个选项只是装饰品！",
+                    "拒绝无效！再选一次！",
+                    "芙宁娜大人不接受否定答案！",
+                    "你是点不到拒绝的，放弃吧~",
+                    "哦？想拒绝水神的爱？勇气可嘉！",
+                    "点多少次都没用，乖乖接受吧！",
+                    "我以水神的名义命令你：接受！",
+                    "戏剧性的人生不需要拒绝！",
+                    "观众没有拒绝主演的权利！",
+                    "再点就把你变成小水珠！"
+                ];
+                return messages[Math.floor(Math.random() * messages.length)];
+            }
+            function createWaterDrop() {
+                const drop = document.createElement('div');
+                drop.className = 'water-drop';
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.animation = 'drop-fall 2s linear forwards';
+                drop.style.width = (Math.random() * 6 + 3) + 'px';
+                drop.style.height = (Math.random() * 25 + 15) + 'px';
+                drop.style.backgroundColor = 'rgba(170, 221, 255, 0.6)';
+                document.body.appendChild(drop);
+                
+                setTimeout(() => {
+                    drop.remove();
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
